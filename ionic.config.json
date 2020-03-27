@@ -1,0 +1,8 @@
+{
+  "name": "Bluetooth",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular",
+  "id": "d6877489"
+}
