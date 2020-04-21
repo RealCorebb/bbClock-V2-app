@@ -1,3 +1,3 @@
-# ionicBLE_code
+# bbClock V2    Mobile Application
 
-This is my code enjoy
+WIP
