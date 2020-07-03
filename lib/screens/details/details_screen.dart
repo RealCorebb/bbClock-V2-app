@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:bbClock/constants.dart';
 import 'package:bbClock/models/settings.dart';
-import 'package:bbClock/screens/details/components/body2test.dart';
+import 'package:bbClock/screens/details/components/page_settings.dart';
 
-import 'components/body.dart';
+import 'components/basic_settings.dart';
 
 class DetailsScreen extends StatelessWidget {
   final int index;
@@ -16,7 +16,7 @@ class DetailsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: kPrimaryColor,
       appBar: buildAppBar(context),
-      body: Body(
+      body: BasicSettings(
       ),
     );
     }
@@ -24,7 +24,7 @@ class DetailsScreen extends StatelessWidget {
       return Scaffold(
       backgroundColor: kPrimaryColor,
       appBar: buildAppBar(context),
-      body: Body2test(
+      body: PagesSettings(
       ),
     );
     }
