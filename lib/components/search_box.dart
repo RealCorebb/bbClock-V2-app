@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import '../constants.dart';
+
+var wsstatus = TextEditingController();
 
 class SearchBox extends StatelessWidget {
   const SearchBox({
@@ -21,6 +22,7 @@ class SearchBox extends StatelessWidget {
       ),
       decoration: BoxDecoration(),
       child: TextField(
+        controller: wsstatus,
         onChanged: onChanged,
         style: TextStyle(color: Colors.white),
         decoration: InputDecoration(

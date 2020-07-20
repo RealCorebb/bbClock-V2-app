@@ -1,16 +1,15 @@
-import 'package:bbClock/screens/setting/main_screen.dart';
+import 'package:bbClock/main.dart';
 import 'package:flutter/material.dart';
 import 'package:bbClock/constants.dart';
-import 'package:bbClock/models/settings.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 Color pickerColor = Color(0xff443a49);
 Color currentColor = Color(0xff443a49);
-var channel = MainScreen.channel;
+var channel = bbClock.wschannel;
 // ValueChanged<Color> callback
 void changeColor(Color color) {
   print(color.toString().split('(0xff')[1].split(')')[0]);
-  channel.sink.add("c" + color.toString().split('(0xff')[1].split(')')[0]);
+  channel.send("c" + color.toString().split('(0xff')[1].split(')')[0]);
 }
 
 class PagesSettings extends StatelessWidget {

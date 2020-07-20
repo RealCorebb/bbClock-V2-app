@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bbClock/screens/setting/main_screen.dart';
+import 'package:bbClock/main.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 bool block = false;
@@ -11,7 +11,7 @@ List<Color> ProgressBarColors = [
   Color(0xFFC2DB07),
   Color(0xFF17A60D)
 ];
-var channel = MainScreen.wschannel;
+var wschannel = bbClock.ws;
 
 final brightness = SleekCircularSlider(
   appearance: CircularSliderAppearance(
@@ -24,6 +24,6 @@ final brightness = SleekCircularSlider(
     // client = http.Client();
   },
   onChange: (double value) async {
-    channel.send("b" + value.round().toString());
+    wschannel.send("b" + value.round().toString());
   },
 );
