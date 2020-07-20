@@ -12,13 +12,18 @@ void main() {
 }
 
 class bbClock extends StatelessWidget {
-  final wschannel = IOWebSocketChannel.connect('ws://192.168.2.119/ws');
+  static var wschannel = IOWebSocketChannel.connect('ws://bbclock.lan/ws');
   @override
   Widget build(BuildContext context) {
     wschannel.stream.listen(
-      (dynamic message) {},
+      (dynamic message) {
+        if (message == "iambbclock") debugPrint('connected');
+        wsstatus.text = "已连接";
+      },
       onDone: () {
         debugPrint('ws channel closed');
+        wsstatus.text = "正在尝试连接";
+        wschannel = IOWebSocketChannel.connect('ws://bbclock.lan/ws');
       },
       onError: (error) {
         debugPrint('ws error $error');

@@ -9,7 +9,7 @@ var channel = bbClock.wschannel;
 // ValueChanged<Color> callback
 void changeColor(Color color) {
   print(color.toString().split('(0xff')[1].split(')')[0]);
-  channel.send("c" + color.toString().split('(0xff')[1].split(')')[0]);
+  channel.sink.add("c" + color.toString().split('(0xff')[1].split(')')[0]);
 }
 
 class PagesSettings extends StatelessWidget {

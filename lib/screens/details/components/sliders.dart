@@ -11,7 +11,7 @@ List<Color> ProgressBarColors = [
   Color(0xFFC2DB07),
   Color(0xFF17A60D)
 ];
-var wschannel = bbClock.ws;
+var wschannel = bbClock.wschannel;
 
 final brightness = SleekCircularSlider(
   appearance: CircularSliderAppearance(
@@ -24,6 +24,6 @@ final brightness = SleekCircularSlider(
     // client = http.Client();
   },
   onChange: (double value) async {
-    wschannel.send("b" + value.round().toString());
+    wschannel.sink.add("b" + value.round().toString());
   },
 );
