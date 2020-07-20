@@ -19,10 +19,7 @@ class SearchBox extends StatelessWidget {
         horizontal: kDefaultPadding,
         vertical: kDefaultPadding / 4, // 5 top and bottom
       ),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.4),
-        borderRadius: BorderRadius.circular(12),
-      ),
+      decoration: BoxDecoration(),
       child: TextField(
         onChanged: onChanged,
         style: TextStyle(color: Colors.white),
@@ -30,7 +27,7 @@ class SearchBox extends StatelessWidget {
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
           icon: SvgPicture.asset("assets/icons/search.svg"),
-          hintText: '...',
+          hintText: '正在尝试连接设备',
           hintStyle: TextStyle(color: Colors.white),
         ),
       ),
