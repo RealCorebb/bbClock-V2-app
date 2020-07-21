@@ -1,11 +1,15 @@
 import 'dart:async';
-
+import 'dart:convert';
+import 'dart:io';
+import 'dart:convert' as convert;
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:bbClock/constants.dart';
 import 'package:bbClock/screens/setting/main_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:web_socket_channel/io.dart';
 import 'components/search_box.dart';
+import 'models/fileIO.dart';
 
 void main() {
   runApp(bbClock());
@@ -13,12 +17,26 @@ void main() {
 
 class bbClock extends StatelessWidget {
   static var wschannel = IOWebSocketChannel.connect('ws://bbclock.lan/ws');
+  FileIO file = new FileIO();
+  Map<String, dynamic> alldata;
   @override
   Widget build(BuildContext context) {
+    Future<String> jsonString = file.readData();
+    print(jsonString);
     wschannel.stream.listen(
-      (dynamic message) {
-        if (message == "iambbclock") debugPrint('connected');
-        wsstatus.text = "已连接";
+      (dynamic message) async {
+        if (message == "iambbclock") {
+          debugPrint('connected');
+          wsstatus.text = "已连接";
+          var response = await http.get("http://bbclock.lan/alldata.json");
+          if (response.statusCode == 200) {
+            String jsonString = utf8.decode(response.bodyBytes);
+            file.writeData(jsonString);
+            alldata = jsonDecode(jsonString);
+            print("write done");
+            print('${alldata['pageslist']}');
+          }
+        }
       },
       onDone: () {
         debugPrint('ws channel closed');
