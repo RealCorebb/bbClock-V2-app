@@ -12,21 +12,18 @@ class DetailsScreen extends StatelessWidget {
   const DetailsScreen({Key key, this.index}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    if(index == 0){
-    return Scaffold(
-      backgroundColor: kPrimaryColor,
-      appBar: buildAppBar(context),
-      body: BasicSettings(
-      ),
-    );
-    }
-    else if (index == 1){
+    if (index == 0) {
       return Scaffold(
-      backgroundColor: kPrimaryColor,
-      appBar: buildAppBar(context),
-      body: PagesSettings(
-      ),
-    );
+        backgroundColor: kPrimaryColor,
+        appBar: buildAppBar(context),
+        body: BasicSettingsWidget(),
+      );
+    } else if (index == 1) {
+      return Scaffold(
+        backgroundColor: kPrimaryColor,
+        appBar: buildAppBar(context),
+        body: PagesSettings(),
+      );
     }
   }
 

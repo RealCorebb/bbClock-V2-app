@@ -9,8 +9,12 @@ import 'sliders.dart';
 final controller = PageController(initialPage: 0);
 Size size;
 
-class BasicSettings extends StatelessWidget {
-  const BasicSettings({Key key}) : super(key: key);
+class BasicSettingsWidget extends StatefulWidget {
+  @override
+  _BasicSettingsState createState() => _BasicSettingsState();
+}
+
+class _BasicSettingsState extends State<BasicSettingsWidget> {
   @override
   Widget build(BuildContext context) {
     // it provide us total height and width
