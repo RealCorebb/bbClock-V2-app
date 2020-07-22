@@ -1,9 +1,9 @@
+import 'package:bbClock/screens/details/components/interactive.dart';
 import 'package:flutter/material.dart';
 import 'package:bbClock/constants.dart';
 import 'package:bbClock/models/settings.dart';
 
 import 'sliders.dart';
-import 'chat_and_add_to_cart.dart';
 import 'sliders.dart';
 
 final controller = PageController(initialPage: 0);
@@ -20,7 +20,7 @@ class BasicSettings extends StatelessWidget {
         bottom: false,
         child: PageView(
           controller: controller,
-          children: <Widget>[_brightness(), _brightness()],
+          children: <Widget>[_brightness(), _volume(), _extraSettings()],
         ));
   }
 
@@ -62,7 +62,103 @@ class BasicSettings extends StatelessWidget {
               ],
             ),
           ),
-          ChatAndAddToCart(),
+          autoBrightnessWidget(),
+        ],
+      ),
+    );
+  }
+
+  _volume() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
+            decoration: BoxDecoration(
+              color: kBackgroundColor,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(50),
+                bottomRight: Radius.circular(50),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Center(heightFactor: 1.2, child: volume),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+                  child: Text(
+                    '音量调整',
+                    //style: Theme.of(context).textTheme.headline6,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+                  child: Text(
+                    '您可以在这里调整音量',
+                    style: TextStyle(color: kTextLightColor),
+                  ),
+                ),
+                SizedBox(height: kDefaultPadding),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  _extraSettings() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
+            decoration: BoxDecoration(
+              color: kBackgroundColor,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(50),
+                bottomRight: Radius.circular(50),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  '自动翻页',
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: Colors.grey, fontSize: 16),
+                ),
+                /*
+                Switch(value: _value,
+                 onChanged: (val) {
+                setState(() {
+                  _value = val;
+                  print(_value);
+                });
+              }),*/
+                Text(
+                  '翻页间隔',
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: Colors.grey, fontSize: 16),
+                ),
+                Text(
+                  '手势启用',
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: Colors.grey, fontSize: 16),
+                ),
+                SizedBox(height: kDefaultPadding),
+              ],
+            ),
+          ),
         ],
       ),
     );
