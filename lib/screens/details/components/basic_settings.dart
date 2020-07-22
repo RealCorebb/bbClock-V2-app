@@ -15,6 +15,7 @@ class BasicSettingsWidget extends StatefulWidget {
 }
 
 class _BasicSettingsState extends State<BasicSettingsWidget> {
+  bool _autoNextPage = false;
   @override
   Widget build(BuildContext context) {
     // it provide us total height and width
@@ -133,20 +134,23 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
-                  '自动翻页',
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: Colors.grey, fontSize: 16),
-                ),
-                /*
-                Switch(value: _value,
-                 onChanged: (val) {
-                setState(() {
-                  _value = val;
-                  print(_value);
-                });
-              }),*/
+                new Row(children: <Widget>[
+                  Text(
+                    '自动翻页',
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                  ),
+                  Spacer(),
+                  Switch(
+                      value: _autoNextPage,
+                      onChanged: (val) {
+                        setState(() {
+                          _autoNextPage = val;
+                          print(_autoNextPage);
+                        });
+                      }),
+                ]),
                 Text(
                   '翻页间隔',
                   textAlign: TextAlign.center,
