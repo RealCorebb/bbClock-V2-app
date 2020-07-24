@@ -15,7 +15,10 @@ class BasicSettingsWidget extends StatefulWidget {
 }
 
 class _BasicSettingsState extends State<BasicSettingsWidget> {
-  bool _autoNextPage = false;
+  bool _autoNextPage = true;
+  bool _isGestureOn = true;
+  bool _autoInMusic = true;
+  double _interval = 10;
   @override
   Widget build(BuildContext context) {
     // it provide us total height and width
@@ -135,6 +138,12 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 new Row(children: <Widget>[
+                  Icon(
+                    Icons.autorenew,
+                    color: Colors.teal,
+                    size: 24.0,
+                  ),
+                  SizedBox(width: 15),
                   Text(
                     '自动翻页',
                     textAlign: TextAlign.center,
@@ -151,18 +160,75 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                         });
                       }),
                 ]),
-                Text(
-                  '翻页间隔',
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: Colors.grey, fontSize: 16),
-                ),
-                Text(
-                  '手势启用',
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: Colors.grey, fontSize: 16),
-                ),
+                new Row(children: <Widget>[
+                  Icon(
+                    Icons.update,
+                    color: Colors.teal,
+                    size: 24.0,
+                  ),
+                  SizedBox(width: 15),
+                  Text(
+                    '翻页间隔',
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                  ),
+                  Spacer(),
+                  Slider(
+                      value: _interval,
+                      onChanged: (val) {
+                        setState(() {
+                          _interval = val;
+                          print(_interval);
+                        });
+                      },
+                      min: 5,
+                      max: 300)
+                ]),
+                new Row(children: <Widget>[
+                  Icon(
+                    Icons.pan_tool,
+                    color: Colors.teal,
+                    size: 24.0,
+                  ),
+                  SizedBox(width: 15),
+                  Text(
+                    '手势启用',
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                  ),
+                  Spacer(),
+                  Switch(
+                      value: _autoNextPage,
+                      onChanged: (val) {
+                        setState(() {
+                          _isGestureOn = val;
+                        });
+                      }),
+                ]),
+                new Row(children: <Widget>[
+                  Icon(
+                    Icons.music_video,
+                    color: Colors.teal,
+                    size: 24.0,
+                  ),
+                  SizedBox(width: 15),
+                  Text(
+                    '自动进入音乐界面',
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                  ),
+                  Spacer(),
+                  Switch(
+                      value: _autoInMusic,
+                      onChanged: (val) {
+                        setState(() {
+                          _autoInMusic = val;
+                        });
+                      }),
+                ]),
                 SizedBox(height: kDefaultPadding),
               ],
             ),

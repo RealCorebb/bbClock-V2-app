@@ -1,3 +1,4 @@
+import 'package:bbClock/screens/details/components/account_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:bbClock/constants.dart';
@@ -23,6 +24,12 @@ class DetailsScreen extends StatelessWidget {
         backgroundColor: kPrimaryColor,
         appBar: buildAppBar(context),
         body: PagesSettings(),
+      );
+    } else if (index == 2) {
+      return Scaffold(
+        backgroundColor: kPrimaryColor,
+        appBar: buildAppBar(context),
+        body: AccountSettingsWidget(),
       );
     }
   }
