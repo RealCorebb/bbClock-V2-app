@@ -11,6 +11,7 @@ import 'package:web_socket_channel/io.dart';
 import 'components/search_box.dart';
 import 'models/fileIO.dart';
 
+Map<String, dynamic> alldata;
 void main() {
   runApp(bbClock());
 }
@@ -18,7 +19,7 @@ void main() {
 class bbClock extends StatelessWidget {
   static var wschannel = IOWebSocketChannel.connect('ws://bbclock.lan/ws');
   FileIO file = new FileIO();
-  Map<String, dynamic> alldata;
+
   @override
   Widget build(BuildContext context) {
     Future<String> jsonString = file.readData();
