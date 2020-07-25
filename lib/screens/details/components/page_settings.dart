@@ -12,13 +12,14 @@ void changeColor(Color color) {
   channel.sink.add("c" + color.toString().split('(0xff')[1].split(')')[0]);
 }
 
-class PagesSettings extends StatelessWidget {
-  const PagesSettings({Key key}) : super(key: key);
+class PagesSettingsWidget extends StatefulWidget {
+  @override
+  _PagesSettingsState createState() => _PagesSettingsState();
+}
+
+class _PagesSettingsState extends State<PagesSettingsWidget> {
   @override
   Widget build(BuildContext context) {
-    // it provide us total height and width
-    Size size = MediaQuery.of(context).size;
-    // it enable scrolling on small devices
     return SafeArea(
       bottom: false,
       child: Column(
@@ -37,33 +38,61 @@ class PagesSettings extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Center(
-                  child: RaisedButton(
-                    elevation: 3.0,
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            titlePadding: const EdgeInsets.all(0.0),
-                            contentPadding: const EdgeInsets.all(0.0),
-                            content: SingleChildScrollView(
-                              child: MaterialPicker(
-                                pickerColor: currentColor,
-                                onColorChanged: changeColor,
-                                enableLabel: true,
+                Stack(
+                  children: <Widget>[
+                    Container(
+                        width: 1280,
+                        height: 320,
+                        child: Image(
+                            // filterQuality: ,
+                            image: AssetImage(
+                                "assets/images/page_background.png"))),
+                    Container(
+                      width: 1280,
+                      height: 320,
+                      child: Row(
+                        children: <Widget>[
+                          //RaisedButton(),
+                          Container(
+                              //padding: EdgeInsets.only(top: 10),
+                              width: 78,
+                              //color: Colors.green,
+                              child: Image(
+                                  filterQuality: FilterQuality.none,
+                                  image: NetworkImage(
+                                      "http://bbclock.lan/gifs/1.gif"),
+                                  fit: BoxFit.fitWidth)),
+                          InkWell(
+                            onTap: () => showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  titlePadding: const EdgeInsets.all(0.0),
+                                  contentPadding: const EdgeInsets.all(0.0),
+                                  content: SingleChildScrollView(
+                                    child: MaterialPicker(
+                                      pickerColor: currentColor,
+                                      onColorChanged: changeColor,
+                                      enableLabel: true,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            child: Container(
+                              child: Text(
+                                'Page1',
+                                textAlign: TextAlign.right,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 48),
                               ),
                             ),
-                          );
-                        },
-                      );
-                    },
-                    child: const Text('修改文字颜色'),
-                    color: currentColor,
-                    textColor: useWhiteForeground(currentColor)
-                        ? const Color(0xffffffff)
-                        : const Color(0xff000000),
-                  ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
                 Padding(
                   padding:
