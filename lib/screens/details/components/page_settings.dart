@@ -93,11 +93,14 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                                   ),
                                   child: Container(
                                     child: Text(
-                                      '${alldata['pages'][int.parse('${alldata['pageslist'][i]}')]['text'][0]}',
-                                      textAlign: TextAlign.right,
+                                      ' ${alldata['pages'][int.parse('${alldata['pageslist'][i]}')]['text'][0]}',
+                                      textAlign: TextAlign.center,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                          color: Colors.white, fontSize: 48),
+                                        color: Colors.white,
+                                        fontSize: 96,
+                                        fontFamily: 'PixelCorebb',
+                                      ),
                                     ),
                                   ),
                                 ),

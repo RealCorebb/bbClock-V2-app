@@ -4,9 +4,6 @@ import 'package:bbClock/constants.dart';
 import 'package:bbClock/models/settings.dart';
 import 'package:flutter_svg/svg.dart';
 
-import 'sliders.dart';
-import 'sliders.dart';
-
 final controller = PageController(initialPage: 0);
 Size size;
 
@@ -24,18 +21,18 @@ class AccountSettingsWidget extends StatelessWidget {
         bottom: false,
         child: PageView(
           controller: controller,
-          children: <Widget>[_extraSettings()],
+          children: <Widget>[_accountSettings()],
         ));
   }
 
-  _extraSettings() {
+  _accountSettings() {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
             width: double.infinity,
-            padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
+            padding: EdgeInsets.fromLTRB(50, 30, 50, 50),
             decoration: BoxDecoration(
               color: kBackgroundColor,
               borderRadius: BorderRadius.only(
@@ -47,22 +44,58 @@ class AccountSettingsWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 TextField(
-                  style: TextStyle(color: Colors.white),
                   decoration: InputDecoration(
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    icon: SvgPicture.asset("assets/icons/search.svg"),
-                    hintText: '正在尝试连接设备',
+                    contentPadding: EdgeInsets.all(8.0),
+                    icon: SvgPicture.asset(
+                      "assets/icons/bilibili-fill.svg",
+                      height: 38,
+                      color: Colors.lightBlue,
+                    ),
+                    hintText: 'Bilibili (UID)',
                     hintStyle: TextStyle(color: Colors.grey),
                   ),
                 ),
                 TextField(
-                  style: TextStyle(color: Colors.white),
                   decoration: InputDecoration(
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    icon: SvgPicture.asset("assets/icons/search.svg"),
-                    hintText: '正在尝试连接设备',
+                    contentPadding: EdgeInsets.all(8.0),
+                    icon: SvgPicture.asset(
+                      "assets/icons/weibo.svg",
+                      height: 38,
+                    ),
+                    hintText: '微博(UID)',
+                    hintStyle: TextStyle(color: Colors.grey),
+                  ),
+                ),
+                TextField(
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(8.0),
+                    icon: SvgPicture.asset(
+                      "assets/icons/youtube.svg",
+                      height: 38,
+                    ),
+                    hintText: 'Youtube(UID)',
+                    hintStyle: TextStyle(color: Colors.grey),
+                  ),
+                ),
+                TextField(
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(8.0),
+                    icon: SvgPicture.asset(
+                      "assets/icons/instagram.svg",
+                      height: 38,
+                    ),
+                    hintText: 'Instagram(UID)',
+                    hintStyle: TextStyle(color: Colors.grey),
+                  ),
+                ),
+                TextField(
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(8.0),
+                    icon: SvgPicture.asset(
+                      "assets/icons/github.svg",
+                      height: 38,
+                    ),
+                    hintText: 'Github(ID)',
                     hintStyle: TextStyle(color: Colors.grey),
                   ),
                 ),

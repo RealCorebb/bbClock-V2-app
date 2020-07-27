@@ -11,6 +11,7 @@ import 'package:web_socket_channel/io.dart';
 import 'components/search_box.dart';
 import 'models/fileIO.dart';
 
+bool wsbool = false;
 Map<String, dynamic> alldata;
 void main() {
   runApp(bbClock());
@@ -28,6 +29,7 @@ class bbClock extends StatelessWidget {
       (dynamic message) async {
         if (message == "iambbclock") {
           debugPrint('connected');
+          wsbool = true;
           wsstatus.text = "已连接";
           var response = await http.get("http://bbclock.lan/alldata.json");
           if (response.statusCode == 200) {
@@ -41,11 +43,13 @@ class bbClock extends StatelessWidget {
       },
       onDone: () {
         debugPrint('ws channel closed');
+        wsbool = false;
         wsstatus.text = "正在尝试连接";
         wschannel = IOWebSocketChannel.connect('ws://bbclock.lan/ws');
       },
       onError: (error) {
         debugPrint('ws error $error');
+        wschannel = IOWebSocketChannel.connect('ws://bbclock.lan/ws');
       },
     );
     return MaterialApp(

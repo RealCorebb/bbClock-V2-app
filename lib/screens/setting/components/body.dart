@@ -3,7 +3,8 @@ import 'package:bbClock/components/search_box.dart';
 import 'package:bbClock/constants.dart';
 import 'package:bbClock/models/settings.dart';
 import 'package:bbClock/screens/details/details_screen.dart';
-
+import 'package:bbClock/main.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'setting_card.dart';
 
 class Body extends StatelessWidget {
@@ -36,14 +37,24 @@ class Body extends StatelessWidget {
                     itemIndex: index,
                     setting: settings[index],
                     press: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DetailsScreen(
-                            index:index,
+                      if (wsbool == true)
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailsScreen(
+                              index: index,
+                            ),
                           ),
-                        ),
-                      );
+                        );
+                      else
+                        Fluttertoast.showToast(
+                            msg: "尚未连接上设备",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0);
                     },
                   ),
                 )

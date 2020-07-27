@@ -21,7 +21,10 @@ class MainScreen extends StatelessWidget {
       title: Text('控制台'),
       actions: <Widget>[
         IconButton(
-          icon: SvgPicture.asset("assets/icons/notification.svg"),
+          icon: SvgPicture.asset(
+            "assets/icons/settings.svg",
+            color: Colors.teal[50],
+          ),
           onPressed: () {},
         ),
       ],
