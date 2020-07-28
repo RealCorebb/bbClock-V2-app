@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:bbClock/models/fileIO.dart';
 import 'package:bbClock/screens/details/components/interactive.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:bbClock/constants.dart';
 import 'package:bbClock/main.dart';
@@ -22,6 +23,7 @@ class _AccountSettingsState extends State<AccountSettingsWidget> {
   final youtubeCon = TextEditingController();
   final insCon = TextEditingController();
   final githubCon = TextEditingController();
+  Response response;
   @override
   void initState() {
     // TODO: implement initState
@@ -139,7 +141,7 @@ class _AccountSettingsState extends State<AccountSettingsWidget> {
                     side: BorderSide(color: Colors.teal)),
                 height: 60.0,
                 minWidth: 300.0,
-                onPressed: () {
+                onPressed: () async {
                   FileIO file = new FileIO();
                   alldata['accounts']['bilibili'] = biliCon.text;
                   alldata['accounts']['weibo'] = weiboCon.text;
@@ -147,6 +149,10 @@ class _AccountSettingsState extends State<AccountSettingsWidget> {
                   alldata['accounts']['instagram'] = insCon.text;
                   alldata['accounts']['github'] = githubCon.text;
                   file.writeData(jsonEncode(alldata));
+                  FileIO().uploadFile().then((value) => setState(() {
+                        this.response = value;
+                      }));
+                  print(response.statusCode);
                 },
                 child: Text(
                   "保存设置",

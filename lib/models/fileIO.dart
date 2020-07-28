@@ -2,17 +2,20 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:bbClock/main.dart';
+import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 
 class FileIO {
-  Future<String> get _localPath async {
+  Response response;
+  Dio dio = new Dio();
+  Future<String> get localPath async {
     final directory = await getApplicationDocumentsDirectory();
 
     return directory.path;
   }
 
   Future<File> get _localFile async {
-    final path = await _localPath;
+    final path = await localPath;
     return File('$path/alldata.json');
   }
 
