@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:bbClock/constants.dart';
 import 'package:bbClock/models/settings.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart' as http;
 
 final controller = PageController(initialPage: 0);
 Size size;
@@ -105,7 +106,7 @@ class _AdvancedSettingsState extends State<AdvancedSettingsWidget> {
                     side: BorderSide(color: Colors.teal)),
                 height: 60.0,
                 minWidth: 300.0,
-                onPressed: () {
+                onPressed: () async {
                   FileIO file = new FileIO();
                   print(alldata['settings']['NetworkMode']);
                   print(alldata['settings']['NetworkAddress']);
@@ -117,7 +118,13 @@ class _AdvancedSettingsState extends State<AdvancedSettingsWidget> {
 
                   print(alldata['settings']['NetworkMode']);
                   print(alldata['settings']['NetworkAddress']);
-                  file.writeData(jsonEncode(alldata));
+                  String alldataString = jsonEncode(alldata);
+                  file.writeData(alldataString);
+                  var response = await http.post("http://bbclock.lan/update",
+                      body: {'d': alldataString});
+                  if (response.statusCode == 200) {
+                    print("OK");
+                  }
                 },
                 child: Text(
                   "保存设置",

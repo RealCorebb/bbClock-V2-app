@@ -2,12 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:bbClock/main.dart';
-import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 
 class FileIO {
-  Response response;
-  Dio dio = new Dio();
   Future<String> get localPath async {
     final directory = await getApplicationDocumentsDirectory();
 
