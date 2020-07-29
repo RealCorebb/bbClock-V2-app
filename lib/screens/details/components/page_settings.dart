@@ -4,16 +4,13 @@ import 'package:bbClock/main.dart';
 import 'package:flutter/material.dart';
 import 'package:bbClock/constants.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 
 Color pickerColor = Color(0xff443a49);
 Color currentColor = Color(0xff443a49);
 
 // ValueChanged<Color> callback
-void changeColor(Color color) {
-  print(color.toString().split('(0xff')[1].split(')')[0]);
-  wschannel.sink.add("c" + color.toString().split('(0xff')[1].split(')')[0]);
-}
 
 class PagesSettingsWidget extends StatefulWidget {
   @override
@@ -21,6 +18,29 @@ class PagesSettingsWidget extends StatefulWidget {
 }
 
 class _PagesSettingsState extends State<PagesSettingsWidget> {
+  List<Hexcolor> TextColors = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    for (var i = 0; i < allpages.length; i++)
+      TextColors.add(Hexcolor(
+          '#${alldata['pages'][int.parse('${alldata['pageslist'][i]}')]['color']}'));
+  }
+
+  void changeColor(Color color) {
+    print(color.toString().split('(0xff')[1].split(')')[0]);
+    wschannel.sink.add("c" + color.toString().split('(0xff')[1].split(')')[0]);
+    setState(() {
+      TextColors[controller.page.round()] =
+          Hexcolor('#${color.toString().split('(0xff')[1].split(')')[0]}');
+    });
+
+    alldata['pages']
+            [int.parse('${alldata['pageslist'][controller.page.round()]}')]
+        ['color'] = color.toString().split('(0xff')[1].split(')')[0];
+  }
+
   final controller = PageController(initialPage: page);
   List<dynamic> allpages = alldata["pageslist"];
   @override
@@ -93,10 +113,22 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                                         contentPadding:
                                             const EdgeInsets.all(0.0),
                                         content: SingleChildScrollView(
-                                          child: MaterialPicker(
+                                          child: ColorPicker(
                                             pickerColor: currentColor,
                                             onColorChanged: changeColor,
-                                            enableLabel: true,
+                                            colorPickerWidth: 300.0,
+                                            pickerAreaHeightPercent: 0.7,
+                                            enableAlpha: false,
+                                            displayThumbColor: true,
+                                            showLabel: true,
+                                            paletteType: PaletteType.hsv,
+                                            pickerAreaBorderRadius:
+                                                const BorderRadius.only(
+                                              topLeft:
+                                                  const Radius.circular(2.0),
+                                              topRight:
+                                                  const Radius.circular(2.0),
+                                            ),
                                           ),
                                         ),
                                       );
@@ -108,7 +140,9 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                                       textAlign: TextAlign.center,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                        color: Colors.white,
+                                        // color: Hexcolor(
+                                        //    '#${alldata['pages'][int.parse('${alldata['pageslist'][i]}')]['color']}'),
+                                        color: TextColors[i],
                                         fontSize: 96,
                                         fontFamily: 'PixelCorebb',
                                       ),
