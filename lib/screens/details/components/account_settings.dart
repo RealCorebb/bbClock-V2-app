@@ -7,6 +7,7 @@ import 'package:bbClock/constants.dart';
 import 'package:bbClock/main.dart';
 import 'package:bbClock/models/settings.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
 final controller = PageController(initialPage: 0);
@@ -153,6 +154,14 @@ class _AccountSettingsState extends State<AccountSettingsWidget> {
                       body: {'d': alldataString});
                   if (response.statusCode == 200) {
                     print("OK");
+                    Fluttertoast.showToast(
+                        msg: " 保存成功 ",
+                        toastLength: Toast.LENGTH_LONG,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.blue[200],
+                        textColor: Colors.white,
+                        fontSize: 16.0);
                   }
                 },
                 child: Text(

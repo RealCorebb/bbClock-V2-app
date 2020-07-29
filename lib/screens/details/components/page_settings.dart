@@ -1,16 +1,18 @@
+import 'dart:async';
+
 import 'package:bbClock/main.dart';
 import 'package:flutter/material.dart';
 import 'package:bbClock/constants.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:http/http.dart' as http;
 
 Color pickerColor = Color(0xff443a49);
 Color currentColor = Color(0xff443a49);
-var channel = bbClock.wschannel;
-final controller = PageController(initialPage: 0);
+
 // ValueChanged<Color> callback
 void changeColor(Color color) {
   print(color.toString().split('(0xff')[1].split(')')[0]);
-  channel.sink.add("c" + color.toString().split('(0xff')[1].split(')')[0]);
+  wschannel.sink.add("c" + color.toString().split('(0xff')[1].split(')')[0]);
 }
 
 class PagesSettingsWidget extends StatefulWidget {
@@ -19,9 +21,18 @@ class PagesSettingsWidget extends StatefulWidget {
 }
 
 class _PagesSettingsState extends State<PagesSettingsWidget> {
+  final controller = PageController(initialPage: page);
   List<dynamic> allpages = alldata["pageslist"];
   @override
+  @override
   Widget build(BuildContext context) {
+    streamController.stream.listen(
+      (dynamic message) async {
+        page = int.parse(message);
+        controller.animateToPage(page,
+            duration: Duration(milliseconds: 400), curve: Curves.ease);
+      },
+    );
     return SafeArea(
       bottom: false,
       child: Column(
@@ -118,7 +129,12 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                         .center, //Center Row contents vertically,
                     children: <Widget>[
                       RaisedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          wschannel.sink.add("f");
+                          controller.previousPage(
+                              duration: Duration(milliseconds: 400),
+                              curve: Curves.ease);
+                        },
                         textColor: Colors.white,
                         padding: const EdgeInsets.all(0.0),
                         child: Container(
@@ -137,7 +153,9 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                         ),
                       ),
                       RaisedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          wschannel.sink.add("p");
+                        },
                         textColor: Colors.white,
                         padding: const EdgeInsets.all(0.0),
                         child: Container(
@@ -156,7 +174,12 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                         ),
                       ),
                       RaisedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          wschannel.sink.add("n");
+                          controller.nextPage(
+                              duration: Duration(milliseconds: 400),
+                              curve: Curves.ease);
+                        },
                         textColor: Colors.white,
                         padding: const EdgeInsets.all(0.0),
                         child: Container(

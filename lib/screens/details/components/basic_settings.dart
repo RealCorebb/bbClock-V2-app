@@ -1,8 +1,13 @@
+import 'dart:convert';
+
+import 'package:bbClock/main.dart';
+import 'package:bbClock/models/fileIO.dart';
 import 'package:bbClock/screens/details/components/interactive.dart';
 import 'package:flutter/material.dart';
 import 'package:bbClock/constants.dart';
 import 'package:bbClock/models/settings.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 import 'sliders.dart';
 import 'sliders.dart';
 
@@ -17,8 +22,24 @@ class BasicSettingsWidget extends StatefulWidget {
 class _BasicSettingsState extends State<BasicSettingsWidget> {
   bool _autoNextPage = true;
   bool _isGestureOn = true;
+  bool _isAutoBrightness = true;
   bool _autoInMusic = true;
   double _interval = 10;
+  int _brightnessvalue = 50;
+  int _volumevalue = 50;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _isAutoBrightness = alldata['settings']['autobrightness'];
+    _brightnessvalue = alldata['settings']['brightness'];
+    _volumevalue = alldata['settings']['volume'];
+    _autoNextPage = alldata['settings']['autoNextPage'];
+    _isGestureOn = alldata['settings']['isGestureOn'];
+    _autoInMusic = alldata['settings']['autoInMusic'];
+    _interval = alldata['settings']['interval'].toDouble();
+  }
+
   @override
   Widget build(BuildContext context) {
     // it provide us total height and width
@@ -70,7 +91,63 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
               ],
             ),
           ),
-          autoBrightnessWidget(),
+          Container(
+            margin: EdgeInsets.all(kDefaultPadding),
+            padding: EdgeInsets.symmetric(
+              horizontal: kDefaultPadding,
+              vertical: kDefaultPadding / 2,
+            ),
+            decoration: BoxDecoration(
+              color: Color(0xFFFCBF1E),
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: Row(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 15,
+                  ),
+                  child: Icon(
+                    Icons.brightness_medium,
+                    color: Colors.white,
+                    size: 24.0,
+                  ),
+                ),
+                Text(
+                  '自动亮度',
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+                Spacer(),
+                Switch(
+                    value: _isAutoBrightness,
+                    onChanged: (val) async {
+                      setState(() {
+                        _isAutoBrightness = val;
+                      });
+                      FileIO file = new FileIO();
+                      alldata['settings']['autobrightness'] = _isAutoBrightness;
+                      String alldataString = jsonEncode(alldata);
+                      file.writeData(alldataString);
+                      var response = await http.post(
+                          "http://bbclock.lan/update",
+                          body: {'d': alldataString});
+                      if (response.statusCode == 200) {
+                        print("OK");
+                        Fluttertoast.showToast(
+                            msg: " 保存成功 ",
+                            toastLength: Toast.LENGTH_LONG,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.blue[200],
+                            textColor: Colors.white,
+                            fontSize: 16.0);
+                      }
+                    })
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -178,7 +255,7 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                       value: _interval,
                       onChanged: (val) {
                         setState(() {
-                          _interval = val;
+                          _interval = val.round().toDouble();
                           print(_interval);
                         });
                       },
@@ -200,7 +277,7 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                   ),
                   Spacer(),
                   Switch(
-                      value: _autoNextPage,
+                      value: _isGestureOn,
                       onChanged: (val) {
                         setState(() {
                           _isGestureOn = val;
@@ -231,6 +308,51 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                 ]),
                 SizedBox(height: kDefaultPadding),
               ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(25),
+            child: Center(
+              child: MaterialButton(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                    side: BorderSide(color: Colors.teal)),
+                height: 60.0,
+                minWidth: 300.0,
+                onPressed: () async {
+                  FileIO file = new FileIO();
+                  alldata['settings']['brightness'] = _brightnessvalue;
+                  alldata['settings']['volume'] = _volumevalue;
+                  alldata['settings']['autoNextPage'] = _autoNextPage;
+                  alldata['settings']['isGestureOn'] = _isGestureOn;
+                  alldata['settings']['autoInMusic'] = _autoInMusic;
+                  alldata['settings']['interval'] = _interval;
+                  String alldataString = jsonEncode(alldata);
+                  file.writeData(alldataString);
+                  var response = await http.post("http://bbclock.lan/update",
+                      body: {'d': alldataString});
+                  if (response.statusCode == 200) {
+                    print("OK");
+                    Fluttertoast.showToast(
+                        msg: " 保存成功 ",
+                        toastLength: Toast.LENGTH_LONG,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.blue[200],
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                  }
+                },
+                child: Text(
+                  "保存设置",
+                  style: new TextStyle(
+                    fontSize: 18.0,
+                  ),
+                ),
+                color: Colors.greenAccent,
+                textColor: Colors.white,
+                splashColor: Colors.teal[50],
+              ),
             ),
           ),
         ],

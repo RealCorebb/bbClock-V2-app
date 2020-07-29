@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:convert' as convert;
+import 'package:bbClock/screens/details/components/page_settings.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:bbClock/constants.dart';
@@ -11,22 +12,25 @@ import 'package:web_socket_channel/io.dart';
 import 'components/search_box.dart';
 import 'models/fileIO.dart';
 
+var wschannel = IOWebSocketChannel.connect('ws://bbclock.lan/ws');
+final streamController = StreamController.broadcast();
+
 bool wsbool = false;
+int page = 0;
 Map<String, dynamic> alldata;
 void main() {
   runApp(bbClock());
 }
 
 class bbClock extends StatelessWidget {
-  static var wschannel = IOWebSocketChannel.connect('ws://bbclock.lan/ws');
   FileIO file = new FileIO();
 
   @override
   Widget build(BuildContext context) {
     Future<String> jsonString = file.readData();
-
+    streamController.addStream(wschannel.stream);
     //  alldata = jsonDecode(jsonString.toString());
-    wschannel.stream.listen(
+    streamController.stream.listen(
       (dynamic message) async {
         if (message == "iambbclock") {
           debugPrint('connected');
@@ -40,6 +44,10 @@ class bbClock extends StatelessWidget {
             print("write done");
             print('${alldata['pageslist']}');
           }
+        } else if (message == "nextpage") {
+        } else {
+          page = int.parse(message);
+          print(page.toString());
         }
       },
       onDone: () {
