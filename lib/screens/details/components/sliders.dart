@@ -18,45 +18,6 @@ List<Color> ProgressBarColors = [
   Color(0x9c08450a)
 ];
 
-final brightness = SleekCircularSlider(
-  initialValue: alldata['settings']['brightness'].toDouble(),
-  appearance: CircularSliderAppearance(
-      customColors: CustomSliderColors(
-          trackColor: TrackColor,
-          progressBarColors: ProgressBarColors,
-          shadowColor: Color(0xcffff9),
-          shadowMaxOpacity: 0.02),
-      customWidths: CustomSliderWidths(progressBarWidth: 25),
-      size: 300),
-  onChangeStart: (double value) {
-    isReady = true;
-    // client = http.Client();
-  },
-  onChange: (double value) async {
-    if (isReady) wschannel.sink.add("b" + value.round().toString());
-  },
-  onChangeEnd: (double endValue) async {
-    // ucallback providing an ending value (when a pan gesture ends)
-    isReady = false;
-    alldata['settings']['brightness'] = endValue.round();
-    String alldataString = jsonEncode(alldata);
-    FileIO().writeData(alldataString);
-    var response = await http
-        .post("http://bbclock.lan/update", body: {'d': alldataString});
-    if (response.statusCode == 200) {
-      print("OK");
-      Fluttertoast.showToast(
-          msg: " 保存成功 ",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.blue[200],
-          textColor: Colors.white,
-          fontSize: 16.0);
-    }
-  },
-);
-
 /// Example 09
 final customWidth09 =
     CustomSliderWidths(trackWidth: 1, progressBarWidth: 15, shadowWidth: 50);
@@ -78,15 +39,3 @@ final CircularSliderAppearance appearance09 = CircularSliderAppearance(
     angleRange: 110,
     size: 300,
     counterClockwise: true);
-
-final volume = SleekCircularSlider(
-  initialValue: alldata['settings']['volume'].toDouble(),
-  appearance: appearance09,
-  onChangeStart: (double value) {
-    isReady = true;
-    // client = http.Client();
-  },
-  onChange: (double value) async {
-    wschannel.sink.add("v" + value.round().toString());
-  },
-);

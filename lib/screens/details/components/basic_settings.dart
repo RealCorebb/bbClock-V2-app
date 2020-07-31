@@ -8,6 +8,7 @@ import 'package:bbClock/constants.dart';
 import 'package:bbClock/models/settings.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 import 'sliders.dart';
 import 'sliders.dart';
 
@@ -71,7 +72,49 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Center(heightFactor: 1.2, child: brightness),
+                Center(
+                  heightFactor: 1.2,
+                  child: SleekCircularSlider(
+                    initialValue: _brightnessvalue.toDouble(),
+                    appearance: CircularSliderAppearance(
+                        customColors: CustomSliderColors(
+                            trackColor: TrackColor,
+                            progressBarColors: ProgressBarColors,
+                            shadowColor: Color(0xcffff9),
+                            shadowMaxOpacity: 0.02),
+                        customWidths: CustomSliderWidths(progressBarWidth: 25),
+                        size: 300),
+                    onChangeStart: (double value) {
+                      isReady = true;
+                      // client = http.Client();
+                    },
+                    onChange: (double value) async {
+                      if (isReady)
+                        wschannel.sink.add("b" + value.toInt().toString());
+                    },
+                    onChangeEnd: (double endValue) async {
+                      // ucallback providing an ending value (when a pan gesture ends)
+                      isReady = false;
+                      alldata['settings']['brightness'] = endValue.toInt();
+                      String alldataString = jsonEncode(alldata);
+                      FileIO().writeData(alldataString);
+                      var response = await http.post(
+                          "http://bbclock.lan/update",
+                          body: {'d': alldataString});
+                      if (response.statusCode == 200) {
+                        print("OK");
+                        Fluttertoast.showToast(
+                            msg: " 保存成功 ",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.blue[200],
+                            textColor: Colors.white,
+                            fontSize: 16.0);
+                      }
+                    },
+                  ),
+                ),
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
@@ -171,7 +214,41 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Center(heightFactor: 1.2, child: volume),
+                Center(
+                  heightFactor: 1.2,
+                  child: SleekCircularSlider(
+                    initialValue: _volumevalue.toDouble(),
+                    appearance: appearance09,
+                    onChangeStart: (double value) {
+                      isReady = true;
+                      // client = http.Client();
+                    },
+                    onChange: (double value) async {
+                      wschannel.sink.add("v" + value.toInt().toString());
+                    },
+                    onChangeEnd: (double endValue) async {
+                      // ucallback providing an ending value (when a pan gesture ends)
+                      isReady = false;
+                      alldata['settings']['volume'] = endValue.toInt();
+                      String alldataString = jsonEncode(alldata);
+                      FileIO().writeData(alldataString);
+                      var response = await http.post(
+                          "http://bbclock.lan/update",
+                          body: {'d': alldataString});
+                      if (response.statusCode == 200) {
+                        print("OK");
+                        Fluttertoast.showToast(
+                            msg: " 保存成功 ",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.blue[200],
+                            textColor: Colors.white,
+                            fontSize: 16.0);
+                      }
+                    },
+                  ),
+                ),
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
@@ -216,6 +293,28 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
               children: <Widget>[
                 new Row(children: <Widget>[
                   Icon(
+                    Icons.pan_tool,
+                    color: Colors.teal,
+                    size: 24.0,
+                  ),
+                  SizedBox(width: 15),
+                  Text(
+                    '手势启用',
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                  ),
+                  Spacer(),
+                  Switch(
+                      value: _isGestureOn,
+                      onChanged: (val) {
+                        setState(() {
+                          _isGestureOn = val;
+                        });
+                      }),
+                ]),
+                new Row(children: <Widget>[
+                  Icon(
                     Icons.autorenew,
                     color: Colors.teal,
                     size: 24.0,
@@ -252,6 +351,8 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                   ),
                   Spacer(),
                   Slider(
+                      label: _interval.toString(),
+                      divisions: 23,
                       value: _interval,
                       onChanged: (val) {
                         setState(() {
@@ -260,29 +361,7 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                         });
                       },
                       min: 5,
-                      max: 300)
-                ]),
-                new Row(children: <Widget>[
-                  Icon(
-                    Icons.pan_tool,
-                    color: Colors.teal,
-                    size: 24.0,
-                  ),
-                  SizedBox(width: 15),
-                  Text(
-                    '手势启用',
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(color: Colors.grey, fontSize: 16),
-                  ),
-                  Spacer(),
-                  Switch(
-                      value: _isGestureOn,
-                      onChanged: (val) {
-                        setState(() {
-                          _isGestureOn = val;
-                        });
-                      }),
+                      max: 120)
                 ]),
                 new Row(children: <Widget>[
                   Icon(
@@ -293,6 +372,28 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                   SizedBox(width: 15),
                   Text(
                     '自动进入音乐界面',
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                  ),
+                  Spacer(),
+                  Switch(
+                      value: _autoInMusic,
+                      onChanged: (val) {
+                        setState(() {
+                          _autoInMusic = val;
+                        });
+                      }),
+                ]),
+                new Row(children: <Widget>[
+                  Icon(
+                    Icons.location_city,
+                    color: Colors.teal,
+                    size: 24.0,
+                  ),
+                  SizedBox(width: 15),
+                  Text(
+                    '城市',
                     textAlign: TextAlign.center,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(color: Colors.grey, fontSize: 16),

@@ -18,43 +18,65 @@ class PagesSettingsWidget extends StatefulWidget {
 }
 
 class _PagesSettingsState extends State<PagesSettingsWidget> {
-  List<Hexcolor> TextColors = [];
+  List<Hexcolor> textColors = [];
+  List<int> pageSortList = [];
+  List<int> pageSwitchEnable = [];
+  Map<String, bool> isPageSwitchOn;
+  bool debounceActive = false;
+  bool _enable = false;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    for (var i = 0; i < allpages.length; i++)
-      TextColors.add(Hexcolor(
-          '#${alldata['pages'][int.parse('${alldata['pageslist'][i]}')]['color']}'));
+    for (int i = 0; i < allpages.length; i++) {
+      textColors.add(Hexcolor(
+          '#${alldata['pages']['${alldata['pageslist'][i]}']['color']}'));
+      pageSortList.add(int.parse('${alldata['pageslist'][i]}'));
+      pageSwitchEnable.add(int.parse('${alldata['pageslist'][i]}'));
+      //isPageSwitchOn['${alldata['pageslist'][i]}'.toString()] = true;
+    }
   }
 
-  void changeColor(Color color) {
+  void changeColor(Color color) async {
+    if (debounceActive) return null;
+    debounceActive = true;
+    await Future.delayed(Duration(milliseconds: 50));
+    debounceActive = false;
     print(color.toString().split('(0xff')[1].split(')')[0]);
     wschannel.sink.add("c" + color.toString().split('(0xff')[1].split(')')[0]);
     setState(() {
-      TextColors[controller.page.round()] =
+      textColors[controller.page.round()] =
           Hexcolor('#${color.toString().split('(0xff')[1].split(')')[0]}');
     });
 
-    alldata['pages']
-            [int.parse('${alldata['pageslist'][controller.page.round()]}')]
+    alldata['pages']['${alldata['pageslist'][controller.page.round()]}']
         ['color'] = color.toString().split('(0xff')[1].split(')')[0];
   }
 
+  final screenPagecontroller = PageController(initialPage: 0);
   final controller = PageController(initialPage: page);
-  List<dynamic> allpages = alldata["pageslist"];
+  List<dynamic> allpages = alldata['pageslist'];
   @override
   @override
   Widget build(BuildContext context) {
     streamController.stream.listen(
       (dynamic message) async {
         page = int.parse(message);
-        controller.animateToPage(page,
-            duration: Duration(milliseconds: 400), curve: Curves.ease);
+        if (controller.hasClients)
+          controller.animateToPage(page,
+              duration: Duration(milliseconds: 400), curve: Curves.ease);
       },
     );
     return SafeArea(
-      bottom: false,
+        bottom: false,
+        child: PageView(
+          controller: screenPagecontroller,
+          children: <Widget>[_pageControl(), _reorderPage()],
+        ));
+  }
+
+  _pageControl() {
+    return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -87,6 +109,7 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                       width: 1280,
                       height: 320,
                       child: PageView(
+                        physics: new NeverScrollableScrollPhysics(),
                         controller: controller,
                         children: <Widget>[
                           //RaisedButton(),
@@ -136,13 +159,13 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                                   ),
                                   child: Container(
                                     child: Text(
-                                      ' ${alldata['pages'][int.parse('${alldata['pageslist'][i]}')]['text'][0]}',
+                                      ' ${alldata['pages']['${alldata['pageslist'][i]}']['text'][0]}',
                                       textAlign: TextAlign.center,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                        // color: Hexcolor(
-                                        //    '#${alldata['pages'][int.parse('${alldata['pageslist'][i]}')]['color']}'),
-                                        color: TextColors[i],
+                                        //color: Hexcolor(
+                                        // '#${alldata['pages']['${alldata['pageslist'][i]}']['color']}'),
+                                        color: textColors[i],
                                         fontSize: 96,
                                         fontFamily: 'PixelCorebb',
                                       ),
@@ -165,9 +188,10 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                       RaisedButton(
                         onPressed: () {
                           wschannel.sink.add("f");
-                          controller.previousPage(
-                              duration: Duration(milliseconds: 400),
-                              curve: Curves.ease);
+                          if (controller.hasClients)
+                            controller.previousPage(
+                                duration: Duration(milliseconds: 400),
+                                curve: Curves.ease);
                         },
                         textColor: Colors.white,
                         padding: const EdgeInsets.all(0.0),
@@ -210,9 +234,10 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                       RaisedButton(
                         onPressed: () {
                           wschannel.sink.add("n");
-                          controller.nextPage(
-                              duration: Duration(milliseconds: 400),
-                              curve: Curves.ease);
+                          if (controller.hasClients)
+                            controller.nextPage(
+                                duration: Duration(milliseconds: 400),
+                                curve: Curves.ease);
                         },
                         textColor: Colors.white,
                         padding: const EdgeInsets.all(0.0),
@@ -253,6 +278,62 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
           ),
         ],
       ),
+    );
+  }
+
+  _reorderPage() {
+    return Container(
+      decoration: BoxDecoration(
+        color: kBackgroundColor,
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(50),
+          bottomRight: Radius.circular(50),
+        ),
+      ),
+      child: ReorderableListView(
+          children: List.generate(pageSortList.length, (index) {
+            return SwitchListTile(
+              key: UniqueKey(),
+              title: Text(
+                  '${alldata['pages'][pageSortList[index].toString()]['name']}'),
+              value: pageSwitchEnable.contains(pageSortList[index]),
+              onChanged: (value) {
+                if (!value) {
+                  pageSwitchEnable.remove(pageSortList[index]);
+                  final int newInt = pageSortList.removeAt(index);
+                  pageSortList.insert(pageSortList.length, newInt);
+
+                  setState(() {
+                    pageSwitchEnable = pageSwitchEnable;
+                    //isPageSwitchOn[pageSortList[index].toString()] = false;
+                  });
+                } else {
+                  pageSwitchEnable.add(pageSortList[index]);
+                  final int newInt = pageSortList.removeAt(index);
+                  pageSortList.insert(0, newInt);
+
+                  setState(() {
+                    pageSwitchEnable = pageSwitchEnable;
+                    // isPageSwitchOn[pageSortList[index].toString()] = true;
+                  });
+                }
+                print(pageSwitchEnable.contains(pageSortList[index]));
+                print(pageSortList);
+                print("==============");
+                print(pageSwitchEnable);
+              },
+            );
+          }),
+          onReorder: (int oldIndex, int newIndex) {
+            setState(() {
+              if (newIndex > oldIndex) {
+                newIndex -= 1;
+              }
+              final int newInt = pageSortList.removeAt(oldIndex);
+              pageSortList.insert(newIndex, newInt);
+            });
+            print(pageSortList);
+          }),
     );
   }
 }
