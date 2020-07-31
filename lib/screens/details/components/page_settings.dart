@@ -21,9 +21,8 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
   List<Hexcolor> textColors = [];
   List<int> pageSortList = [];
   List<int> pageSwitchEnable = [];
-  Map<String, bool> isPageSwitchOn;
+  List<int> pageShowList = [];
   bool debounceActive = false;
-  bool _enable = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -33,7 +32,10 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
           '#${alldata['pages']['${alldata['pageslist'][i]}']['color']}'));
       pageSortList.add(int.parse('${alldata['pageslist'][i]}'));
       pageSwitchEnable.add(int.parse('${alldata['pageslist'][i]}'));
-      //isPageSwitchOn['${alldata['pageslist'][i]}'.toString()] = true;
+    }
+    for (var pp in alldata['pages'].keys) {
+      if (pageSortList.contains(int.parse(pp)) == false)
+        pageSortList.add(int.parse(pp));
     }
   }
 
@@ -305,7 +307,6 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
 
                   setState(() {
                     pageSwitchEnable = pageSwitchEnable;
-                    //isPageSwitchOn[pageSortList[index].toString()] = false;
                   });
                 } else {
                   pageSwitchEnable.add(pageSortList[index]);
@@ -314,13 +315,16 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
 
                   setState(() {
                     pageSwitchEnable = pageSwitchEnable;
-                    // isPageSwitchOn[pageSortList[index].toString()] = true;
                   });
                 }
                 print(pageSwitchEnable.contains(pageSortList[index]));
                 print(pageSortList);
+                pageShowList = List.from(pageSortList);
                 print("==============");
-                print(pageSwitchEnable);
+                for (int i = 0; i < pageShowList.length; i++)
+                  if (pageSwitchEnable.contains(pageShowList[i]) == false)
+                    pageShowList.remove(pageShowList[i]);
+                print(pageShowList);
               },
             );
           }),
@@ -333,6 +337,12 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
               pageSortList.insert(newIndex, newInt);
             });
             print(pageSortList);
+            pageShowList = List.from(pageSortList);
+            print("==============");
+            for (int i = 0; i < pageShowList.length; i++)
+              if (pageSwitchEnable.contains(pageShowList[i]) == false)
+                pageShowList.remove(pageShowList[i]);
+            print(pageShowList);
           }),
     );
   }
