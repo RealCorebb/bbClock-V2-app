@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'package:bbClock/main.dart';
 import 'package:bbClock/models/fileIO.dart';
 import 'package:bbClock/screens/details/components/interactive.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:bbClock/constants.dart';
 import 'package:bbClock/models/settings.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart' as http;
+
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
-import 'sliders.dart';
 import 'sliders.dart';
 
 final controller = PageController(initialPage: 0);
@@ -28,6 +28,8 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
   double _interval = 10;
   int _brightnessvalue = 50;
   int _volumevalue = 50;
+  Response response;
+  Dio dio = new Dio();
   @override
   void initState() {
     // TODO: implement initState
@@ -98,6 +100,20 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                       alldata['settings']['brightness'] = endValue.toInt();
                       String alldataString = jsonEncode(alldata);
                       FileIO().writeData(alldataString);
+                      /*
+                      var uri = Uri.parse("http://bbclock.lan/upload");
+                      var request = new MultipartRequest("POST", uri);
+                      print('${FileIO().localPath}/alldata.json');
+                      
+                      var multipartFile = await MultipartFile.fromPath(
+                          "package", '${FileIO().localPath.then((value) => null)}/alldata.json');
+                      request.files.add(multipartFile);
+                      StreamedResponse response = await request.send();
+                      response.stream.transform(utf8.decoder).listen((value) {
+                        print(value);
+                      });
+                      */
+                      /*
                       var response = await http.post(
                           "http://bbclock.lan/update",
                           body: {'d': alldataString});
@@ -111,7 +127,14 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                             backgroundColor: Colors.blue[200],
                             textColor: Colors.white,
                             fontSize: 16.0);
-                      }
+                      }*/
+                      FormData formData = FormData.fromMap({
+                        "file": await MultipartFile.fromFile(
+                            '${FileIO().localPath}/alldata.json',
+                            filename: "sb.json")
+                      });
+                      response =
+                          await dio.post("http://bbclock.lan", data: formData);
                     },
                   ),
                 ),
@@ -173,6 +196,7 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                       alldata['settings']['autobrightness'] = _isAutoBrightness;
                       String alldataString = jsonEncode(alldata);
                       file.writeData(alldataString);
+                      /*
                       var response = await http.post(
                           "http://bbclock.lan/update",
                           body: {'d': alldataString});
@@ -186,7 +210,7 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                             backgroundColor: Colors.blue[200],
                             textColor: Colors.white,
                             fontSize: 16.0);
-                      }
+                      }*/
                     })
               ],
             ),
@@ -232,6 +256,7 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                       alldata['settings']['volume'] = endValue.toInt();
                       String alldataString = jsonEncode(alldata);
                       FileIO().writeData(alldataString);
+                      /*
                       var response = await http.post(
                           "http://bbclock.lan/update",
                           body: {'d': alldataString});
@@ -245,7 +270,7 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                             backgroundColor: Colors.blue[200],
                             textColor: Colors.white,
                             fontSize: 16.0);
-                      }
+                      }*/
                     },
                   ),
                 ),
@@ -430,6 +455,7 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                   alldata['settings']['interval'] = _interval;
                   String alldataString = jsonEncode(alldata);
                   file.writeData(alldataString);
+                  /*
                   var response = await http.post("http://bbclock.lan/update",
                       body: {'d': alldataString});
                   if (response.statusCode == 200) {
@@ -442,7 +468,7 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                         backgroundColor: Colors.blue[200],
                         textColor: Colors.white,
                         fontSize: 16.0);
-                  }
+                  }*/
                 },
                 child: Text(
                   "保存设置",

@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:bbClock/main.dart';
+import 'package:bbClock/models/fileIO.dart';
 import 'package:flutter/material.dart';
 import 'package:bbClock/constants.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 
@@ -30,11 +33,22 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
     for (int i = 0; i < allpages.length; i++) {
       textColors.add(Hexcolor(
           '#${alldata['pages']['${alldata['pageslist'][i]}']['color']}'));
-      pageSortList.add(int.parse('${alldata['pageslist'][i]}'));
-      pageSwitchEnable.add(int.parse('${alldata['pageslist'][i]}'));
+      if (alldata['pageslist'][i] <= 6 && alldata['pageslist'][i] >= 1) {
+        pageSortList.add(1);
+        pageSwitchEnable.add(1);
+      } else if (alldata['pageslist'][i] <= 26 &&
+          alldata['pageslist'][i] >= 21) {
+        pageSortList.add(21);
+        pageSwitchEnable.add(21);
+      } else {
+        pageSortList.add(int.parse('${alldata['pageslist'][i]}'));
+        pageSwitchEnable.add(int.parse('${alldata['pageslist'][i]}'));
+      }
     }
     for (var pp in alldata['pages'].keys) {
-      if (pageSortList.contains(int.parse(pp)) == false)
+      if ((int.parse(pp) <= 6 && int.parse(pp) >= 2) ||
+          (int.parse(pp) <= 26 && int.parse(pp) >= 22)) {
+      } else if (pageSortList.contains(int.parse(pp)) == false)
         pageSortList.add(int.parse(pp));
     }
   }
@@ -328,7 +342,7 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
               },
             );
           }),
-          onReorder: (int oldIndex, int newIndex) {
+          onReorder: (int oldIndex, int newIndex) async {
             setState(() {
               if (newIndex > oldIndex) {
                 newIndex -= 1;
@@ -343,6 +357,7 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
               if (pageSwitchEnable.contains(pageShowList[i]) == false)
                 pageShowList.remove(pageShowList[i]);
             print(pageShowList);
+            alldata['pageslist'] = pageShowList;
           }),
     );
   }

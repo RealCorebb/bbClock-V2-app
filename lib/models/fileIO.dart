@@ -11,14 +11,14 @@ class FileIO {
     return directory.path;
   }
 
-  Future<File> get _localFile async {
+  Future<File> get localFile async {
     final path = await localPath;
     return File('$path/alldata.json');
   }
 
   Future<String> readData() async {
     try {
-      final file = await _localFile;
+      final file = await localFile;
 
       // Read the file
       String contents = await file.readAsString();
@@ -34,7 +34,7 @@ class FileIO {
   }
 
   Future<File> writeData(String data) async {
-    final file = await _localFile;
+    final file = await localFile;
 
     // Write the file
     return file.writeAsString('$data');
