@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:bbClock/main.dart';
 import 'package:bbClock/models/fileIO.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:bbClock/constants.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -21,6 +22,9 @@ class PagesSettingsWidget extends StatefulWidget {
 }
 
 class _PagesSettingsState extends State<PagesSettingsWidget> {
+  String alldatapath;
+  Response response;
+  Dio dio = new Dio();
   List<Hexcolor> textColors = [];
   List<int> pageSortList = [];
   List<int> pageSwitchEnable = [];
@@ -51,6 +55,11 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
       } else if (pageSortList.contains(int.parse(pp)) == false)
         pageSortList.add(int.parse(pp));
     }
+    FileIO().localPath.then((String result) {
+      setState(() {
+        alldatapath = result;
+      });
+    });
   }
 
   void changeColor(Color color) async {
@@ -182,7 +191,7 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                                         //color: Hexcolor(
                                         // '#${alldata['pages']['${alldata['pageslist'][i]}']['color']}'),
                                         color: textColors[i],
-                                        fontSize: 96,
+                                        fontSize: 88,
                                         fontFamily: 'PixelCorebb',
                                       ),
                                     ),
@@ -323,7 +332,7 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                     pageSwitchEnable = pageSwitchEnable;
                   });
                 } else {
-                  pageSwitchEnable.add(pageSortList[index]);
+                  pageSwitchEnable.insert(0, pageSortList[index]);
                   final int newInt = pageSortList.removeAt(index);
                   pageSortList.insert(0, newInt);
 
@@ -331,14 +340,9 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                     pageSwitchEnable = pageSwitchEnable;
                   });
                 }
-                print(pageSwitchEnable.contains(pageSortList[index]));
-                print(pageSortList);
-                pageShowList = List.from(pageSortList);
-                print("==============");
-                for (int i = 0; i < pageShowList.length; i++)
-                  if (pageSwitchEnable.contains(pageShowList[i]) == false)
-                    pageShowList.remove(pageShowList[i]);
-                print(pageShowList);
+                //  print(pageSwitchEnable.contains(pageSortList[index]));
+                //  print(pageSortList);
+                print(pageSwitchEnable);
               },
             );
           }),
@@ -348,16 +352,38 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                 newIndex -= 1;
               }
               final int newInt = pageSortList.removeAt(oldIndex);
+
               pageSortList.insert(newIndex, newInt);
+              if (pageSwitchEnable.contains(pageSortList[oldIndex])) {
+                pageSwitchEnable.removeAt(oldIndex);
+                pageSwitchEnable.insert(newIndex, newInt);
+              }
+              print(pageSwitchEnable);
             });
-            print(pageSortList);
-            pageShowList = List.from(pageSortList);
-            print("==============");
-            for (int i = 0; i < pageShowList.length; i++)
-              if (pageSwitchEnable.contains(pageShowList[i]) == false)
-                pageShowList.remove(pageShowList[i]);
-            print(pageShowList);
-            alldata['pageslist'] = pageShowList;
+
+            alldata['pageslist'] = pageSwitchEnable;
+            String alldataString = jsonEncode(alldata);
+            FileIO().writeData(alldataString);
+            var formData = FormData.fromMap({
+              'file': MultipartFile.fromString(alldataString,
+                  filename: 'alldata.json')
+            });
+            var dio = Dio();
+
+            var response = new Response(); //Response from Dio
+            response = await dio.put("http://bbclock.lan", data: formData);
+
+            if (response.statusCode == 200) {
+              print("OK");
+              Fluttertoast.showToast(
+                  msg: " 保存成功 ",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: Colors.blue[200],
+                  textColor: Colors.white,
+                  fontSize: 16.0);
+            }
           }),
     );
   }

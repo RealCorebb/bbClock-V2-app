@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:bbClock/models/fileIO.dart';
 import 'package:bbClock/screens/details/components/interactive.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:bbClock/constants.dart';
 import 'package:bbClock/main.dart';
@@ -150,13 +151,21 @@ class _AccountSettingsState extends State<AccountSettingsWidget> {
                   alldata['accounts']['github'] = githubCon.text;
                   String alldataString = jsonEncode(alldata);
                   file.writeData(alldataString);
-                  var response = await http.post("http://bbclock.lan/update",
-                      body: {'d': alldataString});
+                  var formData = FormData.fromMap({
+                    'file': MultipartFile.fromString(alldataString,
+                        filename: 'alldata.json')
+                  });
+                  var dio = Dio();
+
+                  var response = new Response(); //Response from Dio
+                  response =
+                      await dio.put("http://bbclock.lan", data: formData);
+
                   if (response.statusCode == 200) {
                     print("OK");
                     Fluttertoast.showToast(
                         msg: " 保存成功 ",
-                        toastLength: Toast.LENGTH_LONG,
+                        toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.BOTTOM,
                         timeInSecForIosWeb: 1,
                         backgroundColor: Colors.blue[200],

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:bbClock/main.dart';
+import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 
 class FileIO {
@@ -38,5 +39,17 @@ class FileIO {
 
     // Write the file
     return file.writeAsString('$data');
+  }
+
+  uploadFile() async {
+    final path = await localPath;
+    var formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile('$path/alldata.json',
+          filename: 'alldata.json')
+    });
+    var dio = Dio();
+
+    var response = new Response(); //Response from Dio
+    response = await dio.put("http://bbclock.lan", data: formData);
   }
 }

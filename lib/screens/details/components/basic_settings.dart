@@ -1,11 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:bbClock/main.dart';
 import 'package:bbClock/models/fileIO.dart';
 import 'package:bbClock/screens/details/components/interactive.dart';
 import 'package:dio/dio.dart';
+//import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:bbClock/constants.dart';
+import 'package:http/http.dart' as http;
 import 'package:bbClock/models/settings.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -21,6 +24,9 @@ class BasicSettingsWidget extends StatefulWidget {
 }
 
 class _BasicSettingsState extends State<BasicSettingsWidget> {
+  //FormData formData;
+
+  String alldatapath;
   bool _autoNextPage = true;
   bool _isGestureOn = true;
   bool _isAutoBrightness = true;
@@ -28,8 +34,8 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
   double _interval = 10;
   int _brightnessvalue = 50;
   int _volumevalue = 50;
-  Response response;
-  Dio dio = new Dio();
+  // Response response;
+  // Dio dio = new Dio();
   @override
   void initState() {
     // TODO: implement initState
@@ -41,6 +47,11 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
     _isGestureOn = alldata['settings']['isGestureOn'];
     _autoInMusic = alldata['settings']['autoInMusic'];
     _interval = alldata['settings']['interval'].toDouble();
+    FileIO().localPath.then((String result) {
+      setState(() {
+        alldatapath = result;
+      });
+    });
   }
 
   @override
@@ -95,28 +106,20 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                         wschannel.sink.add("b" + value.toInt().toString());
                     },
                     onChangeEnd: (double endValue) async {
-                      // ucallback providing an ending value (when a pan gesture ends)
                       isReady = false;
                       alldata['settings']['brightness'] = endValue.toInt();
                       String alldataString = jsonEncode(alldata);
                       FileIO().writeData(alldataString);
-                      /*
-                      var uri = Uri.parse("http://bbclock.lan/upload");
-                      var request = new MultipartRequest("POST", uri);
-                      print('${FileIO().localPath}/alldata.json');
-                      
-                      var multipartFile = await MultipartFile.fromPath(
-                          "package", '${FileIO().localPath.then((value) => null)}/alldata.json');
-                      request.files.add(multipartFile);
-                      StreamedResponse response = await request.send();
-                      response.stream.transform(utf8.decoder).listen((value) {
-                        print(value);
+                      var formData = FormData.fromMap({
+                        'file': MultipartFile.fromString(alldataString,
+                            filename: 'alldata.json')
                       });
-                      */
-                      /*
-                      var response = await http.post(
-                          "http://bbclock.lan/update",
-                          body: {'d': alldataString});
+                      var dio = Dio();
+
+                      var response = new Response(); //Response from Dio
+                      response =
+                          await dio.put("http://bbclock.lan", data: formData);
+
                       if (response.statusCode == 200) {
                         print("OK");
                         Fluttertoast.showToast(
@@ -127,14 +130,7 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                             backgroundColor: Colors.blue[200],
                             textColor: Colors.white,
                             fontSize: 16.0);
-                      }*/
-                      FormData formData = FormData.fromMap({
-                        "file": await MultipartFile.fromFile(
-                            '${FileIO().localPath}/alldata.json',
-                            filename: "sb.json")
-                      });
-                      response =
-                          await dio.post("http://bbclock.lan", data: formData);
+                      }
                     },
                   ),
                 ),
@@ -196,21 +192,27 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                       alldata['settings']['autobrightness'] = _isAutoBrightness;
                       String alldataString = jsonEncode(alldata);
                       file.writeData(alldataString);
-                      /*
-                      var response = await http.post(
-                          "http://bbclock.lan/update",
-                          body: {'d': alldataString});
+                      var formData = FormData.fromMap({
+                        'file': MultipartFile.fromString(alldataString,
+                            filename: 'alldata.json')
+                      });
+                      var dio = Dio();
+
+                      var response = new Response(); //Response from Dio
+                      response =
+                          await dio.put("http://bbclock.lan", data: formData);
+
                       if (response.statusCode == 200) {
                         print("OK");
                         Fluttertoast.showToast(
                             msg: " 保存成功 ",
-                            toastLength: Toast.LENGTH_LONG,
+                            toastLength: Toast.LENGTH_SHORT,
                             gravity: ToastGravity.BOTTOM,
                             timeInSecForIosWeb: 1,
                             backgroundColor: Colors.blue[200],
                             textColor: Colors.white,
                             fontSize: 16.0);
-                      }*/
+                      }
                     })
               ],
             ),
@@ -256,10 +258,16 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                       alldata['settings']['volume'] = endValue.toInt();
                       String alldataString = jsonEncode(alldata);
                       FileIO().writeData(alldataString);
-                      /*
-                      var response = await http.post(
-                          "http://bbclock.lan/update",
-                          body: {'d': alldataString});
+                      var formData = FormData.fromMap({
+                        'file': MultipartFile.fromString(alldataString,
+                            filename: 'alldata.json')
+                      });
+                      var dio = Dio();
+
+                      var response = new Response(); //Response from Dio
+                      response =
+                          await dio.put("http://bbclock.lan", data: formData);
+
                       if (response.statusCode == 200) {
                         print("OK");
                         Fluttertoast.showToast(
@@ -270,7 +278,7 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                             backgroundColor: Colors.blue[200],
                             textColor: Colors.white,
                             fontSize: 16.0);
-                      }*/
+                      }
                     },
                   ),
                 ),
@@ -455,20 +463,27 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                   alldata['settings']['interval'] = _interval;
                   String alldataString = jsonEncode(alldata);
                   file.writeData(alldataString);
-                  /*
-                  var response = await http.post("http://bbclock.lan/update",
-                      body: {'d': alldataString});
+                  var formData = FormData.fromMap({
+                    'file': MultipartFile.fromString(alldataString,
+                        filename: 'alldata.json')
+                  });
+                  var dio = Dio();
+
+                  var response = new Response(); //Response from Dio
+                  response =
+                      await dio.put("http://bbclock.lan", data: formData);
+
                   if (response.statusCode == 200) {
                     print("OK");
                     Fluttertoast.showToast(
                         msg: " 保存成功 ",
-                        toastLength: Toast.LENGTH_LONG,
+                        toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.BOTTOM,
                         timeInSecForIosWeb: 1,
                         backgroundColor: Colors.blue[200],
                         textColor: Colors.white,
                         fontSize: 16.0);
-                  }*/
+                  }
                 },
                 child: Text(
                   "保存设置",
