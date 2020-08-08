@@ -18,6 +18,7 @@ final streamController = StreamController.broadcast();
 bool wsbool = false;
 int page = 0;
 Map<String, dynamic> alldata;
+Map<String, dynamic> alldata_temp;
 void main() {
   runApp(bbClock());
 }

@@ -315,83 +315,99 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
           bottomRight: Radius.circular(50),
         ),
       ),
-      child: ReorderableListView(
-          children: List.generate(pageSortList.length, (index) {
-            return SwitchListTile(
-              key: UniqueKey(),
-              title: Text(
-                  '${alldata['pages'][pageSortList[index].toString()]['name']}'),
-              value: pageSwitchEnable.contains(pageSortList[index]),
-              onChanged: (value) {
-                if (!value) {
-                  print("close");
-                  pageSwitchEnable.remove(pageSortList[index]);
-                  final int newInt = pageSortList.removeAt(index);
-                  pageSortList.insert(pageSortList.length, newInt);
-                  print(pageSwitchEnable);
-                  print(pageSortList);
-                  setState(() {
-                    pageSwitchEnable = pageSwitchEnable;
-                  });
-                } else {
-                  pageSwitchEnable.insert(0, pageSortList[index]);
-                  final int newInt = pageSortList.removeAt(index);
-                  pageSortList.insert(0, newInt);
+      child: Container(
+          child: ReorderableListView(
+              children: List.generate(pageSortList.length, (index) {
+                return SwitchListTile(
+                  key: UniqueKey(),
+                  title: Text(
+                      '${alldata['pages'][pageSortList[index].toString()]['name']}'),
+                  value: pageSwitchEnable.contains(pageSortList[index]),
+                  onChanged: (value) {
+                    if (!value) {
+                      print("close");
+                      pageSwitchEnable.remove(pageSortList[index]);
+                      final int newInt = pageSortList.removeAt(index);
+                      pageSortList.insert(pageSortList.length, newInt);
+                      print(pageSwitchEnable);
+                      print(pageSortList);
+                      setState(() {
+                        pageSwitchEnable = pageSwitchEnable;
+                        allpages = pageSwitchEnable;
+                        for (int i = 0; i < allpages.length; i++) {
+                          textColors.add(Hexcolor(
+                              '#${alldata['pages']['${alldata['pageslist'][i]}']['color']}'));
+                        }
+                      });
+                    } else {
+                      pageSwitchEnable.insert(0, pageSortList[index]);
+                      final int newInt = pageSortList.removeAt(index);
+                      pageSortList.insert(0, newInt);
 
-                  setState(() {
-                    pageSwitchEnable = pageSwitchEnable;
-                  });
+                      setState(() {
+                        pageSwitchEnable = pageSwitchEnable;
+                        allpages = pageSwitchEnable;
+                        for (int i = 0; i < allpages.length; i++) {
+                          textColors.add(Hexcolor(
+                              '#${alldata['pages']['${alldata['pageslist'][i]}']['color']}'));
+                        }
+                      });
+                    }
+                    //  print(pageSwitchEnable.contains(pageSortList[index]));
+                    //  print(pageSortList);
+                    //print(pageSwitchEnable);
+                  },
+                );
+              }),
+              onReorder: (int oldIndex, int newIndex) async {
+                setState(() {
+                  if (newIndex > oldIndex) {
+                    newIndex -= 1;
+                  }
+
+                  if (pageSwitchEnable.contains(pageSortList[oldIndex])) {
+                    final int newInt = pageSortList.removeAt(oldIndex);
+                    pageSortList.insert(newIndex, newInt);
+                    pageSwitchEnable.removeAt(oldIndex);
+                    pageSwitchEnable.insert(newIndex, newInt);
+                  } else {
+                    print("DO it");
+                    final int newInt = pageSortList.removeAt(oldIndex);
+                    pageSortList.insert(newIndex, newInt);
+                  }
+                });
+
+                print(pageSwitchEnable);
+                allpages = pageSwitchEnable;
+                for (int i = 0; i < allpages.length; i++) {
+                  textColors.add(Hexcolor(
+                      '#${alldata['pages']['${alldata['pageslist'][i]}']['color']}'));
                 }
-                //  print(pageSwitchEnable.contains(pageSortList[index]));
-                //  print(pageSortList);
-                //print(pageSwitchEnable);
-              },
-            );
-          }),
-          onReorder: (int oldIndex, int newIndex) async {
-            setState(() {
-              if (newIndex > oldIndex) {
-                newIndex -= 1;
-              }
+                alldata['pageslist'] = pageSwitchEnable;
+                print(alldata['pageslist']);
+                String alldataString = jsonEncode(alldata);
+                FileIO().writeData(alldataString);
+                var formData = FormData.fromMap({
+                  'file': MultipartFile.fromString(alldataString,
+                      filename: 'alldata.json')
+                });
+                var dio = Dio();
 
-              if (pageSwitchEnable.contains(pageSortList[oldIndex])) {
-                final int newInt = pageSortList.removeAt(oldIndex);
-                pageSortList.insert(newIndex, newInt);
-                pageSwitchEnable.removeAt(oldIndex);
-                pageSwitchEnable.insert(newIndex, newInt);
-              } else {
-                print("DO it");
-                final int newInt = pageSortList.removeAt(oldIndex);
-                pageSortList.insert(newIndex, newInt);
-              }
-            });
+                var response = new Response(); //Response from Dio
+                response = await dio.put("http://bbclock.lan", data: formData);
 
-            print(pageSwitchEnable);
-            alldata['pageslist'] = pageSwitchEnable;
-            print(alldata['pageslist']);
-            String alldataString = jsonEncode(alldata);
-            FileIO().writeData(alldataString);
-            var formData = FormData.fromMap({
-              'file': MultipartFile.fromString(alldataString,
-                  filename: 'alldata.json')
-            });
-            var dio = Dio();
-
-            var response = new Response(); //Response from Dio
-            response = await dio.put("http://bbclock.lan", data: formData);
-
-            if (response.statusCode == 200) {
-              print("OK");
-              Fluttertoast.showToast(
-                  msg: " 保存成功 ",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.blue[200],
-                  textColor: Colors.white,
-                  fontSize: 16.0);
-            }
-          }),
+                if (response.statusCode == 200) {
+                  print("OK");
+                  Fluttertoast.showToast(
+                      msg: " 保存成功 ",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.blue[200],
+                      textColor: Colors.white,
+                      fontSize: 16.0);
+                }
+              })),
     );
   }
 }
