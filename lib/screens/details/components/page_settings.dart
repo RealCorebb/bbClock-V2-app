@@ -68,7 +68,7 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
     await Future.delayed(Duration(milliseconds: 50));
     debounceActive = false;
     print(color.toString().split('(0xff')[1].split(')')[0]);
-    wschannel.sink.add("c" + color.toString().split('(0xff')[1].split(')')[0]);
+    wschannel.sink.add("!c" + color.toString().split('(0xff')[1].split(')')[0]);
     setState(() {
       textColors[controller.page.round()] =
           Hexcolor('#${color.toString().split('(0xff')[1].split(')')[0]}');
@@ -212,7 +212,7 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                     children: <Widget>[
                       RaisedButton(
                         onPressed: () {
-                          wschannel.sink.add("f");
+                          wschannel.sink.add("!f");
                           if (controller.hasClients)
                             controller.previousPage(
                                 duration: Duration(milliseconds: 400),
@@ -237,7 +237,7 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                       ),
                       RaisedButton(
                         onPressed: () {
-                          wschannel.sink.add("p");
+                          wschannel.sink.add("!p");
                         },
                         textColor: Colors.white,
                         padding: const EdgeInsets.all(0.0),
@@ -258,7 +258,7 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                       ),
                       RaisedButton(
                         onPressed: () {
-                          wschannel.sink.add("n");
+                          wschannel.sink.add("!n");
                           if (controller.hasClients)
                             controller.nextPage(
                                 duration: Duration(milliseconds: 400),
@@ -351,10 +351,11 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
               if (newIndex > oldIndex) {
                 newIndex -= 1;
               }
-              final int newInt = pageSortList.removeAt(oldIndex);
 
-              pageSortList.insert(newIndex, newInt);
               if (pageSwitchEnable.contains(pageSortList[oldIndex])) {
+              } else {
+                final int newInt = pageSortList.removeAt(oldIndex);
+                pageSortList.insert(newIndex, newInt);
                 pageSwitchEnable.removeAt(oldIndex);
                 pageSwitchEnable.insert(newIndex, newInt);
               }

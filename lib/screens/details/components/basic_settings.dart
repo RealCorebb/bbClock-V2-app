@@ -107,9 +107,11 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                     },
                     onChangeEnd: (double endValue) async {
                       isReady = false;
+
                       alldata['settings']['brightness'] = endValue.toInt();
                       String alldataString = jsonEncode(alldata);
                       FileIO().writeData(alldataString);
+                      /*
                       var formData = FormData.fromMap({
                         'file': MultipartFile.fromString(alldataString,
                             filename: 'alldata.json')
@@ -130,7 +132,7 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                             backgroundColor: Colors.blue[200],
                             textColor: Colors.white,
                             fontSize: 16.0);
-                      }
+                      }*/ //MAYBE NOT NEED
                     },
                   ),
                 ),
@@ -405,28 +407,6 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                   SizedBox(width: 15),
                   Text(
                     '自动进入音乐界面',
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(color: Colors.grey, fontSize: 16),
-                  ),
-                  Spacer(),
-                  Switch(
-                      value: _autoInMusic,
-                      onChanged: (val) {
-                        setState(() {
-                          _autoInMusic = val;
-                        });
-                      }),
-                ]),
-                new Row(children: <Widget>[
-                  Icon(
-                    Icons.location_city,
-                    color: Colors.teal,
-                    size: 24.0,
-                  ),
-                  SizedBox(width: 15),
-                  Text(
-                    '城市',
                     textAlign: TextAlign.center,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(color: Colors.grey, fontSize: 16),

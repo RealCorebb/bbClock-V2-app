@@ -21,6 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  flutter_picker: ^1.1.5
   dio: ^3.0.9
   http: ^0.12.2
   flutter_colorpicker: ^0.3.4

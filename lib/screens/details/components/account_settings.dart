@@ -7,9 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:bbClock/constants.dart';
 import 'package:bbClock/main.dart';
 import 'package:bbClock/models/settings.dart';
+import 'package:flutter_picker/flutter_picker.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'pickerData.dart';
 
 final controller = PageController(initialPage: 0);
 Size size;
@@ -20,6 +22,8 @@ class AccountSettingsWidget extends StatefulWidget {
 }
 
 class _AccountSettingsState extends State<AccountSettingsWidget> {
+  final cityCon = TextEditingController();
+  final daysCon = TextEditingController();
   final biliCon = TextEditingController();
   final weiboCon = TextEditingController();
   final youtubeCon = TextEditingController();
@@ -29,11 +33,13 @@ class _AccountSettingsState extends State<AccountSettingsWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    cityCon.text = alldata['settings']['location'];
     biliCon.text = alldata['accounts']['bilibili'];
     weiboCon.text = alldata['accounts']['weibo'];
     youtubeCon.text = alldata['accounts']['youtube'];
     insCon.text = alldata['accounts']['instagram'];
     githubCon.text = alldata['accounts']['github'];
+    daysCon.text = alldata['accounts']['days'];
   }
 
   @override
@@ -49,6 +55,17 @@ class _AccountSettingsState extends State<AccountSettingsWidget> {
             _accountSettings(),
           ],
         ));
+  }
+
+  showPickerDialog(BuildContext context) {
+    new Picker(
+        adapter: PickerDataAdapter<String>(
+            pickerdata: new JsonDecoder().convert(PickerData)),
+        hideHeader: true,
+        title: new Text("城市选择"),
+        onConfirm: (Picker picker, List value) {
+          cityCon.text = value.toString();
+        }).showDialog(context);
   }
 
   _accountSettings() {
@@ -69,6 +86,18 @@ class _AccountSettingsState extends State<AccountSettingsWidget> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                TextField(
+                  controller: cityCon,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(8.0),
+                    icon: SvgPicture.asset(
+                      "assets/icons/city.svg",
+                      height: 38,
+                    ),
+                    hintText: '城市拼音',
+                    hintStyle: TextStyle(color: Colors.grey),
+                  ),
+                ),
                 TextField(
                   controller: biliCon,
                   decoration: InputDecoration(
@@ -130,6 +159,18 @@ class _AccountSettingsState extends State<AccountSettingsWidget> {
                     hintStyle: TextStyle(color: Colors.grey),
                   ),
                 ),
+                TextField(
+                  controller: daysCon,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(8.0),
+                    icon: SvgPicture.asset(
+                      "assets/icons/heart.svg",
+                      height: 38,
+                    ),
+                    hintText: '计数日时间戳',
+                    hintStyle: TextStyle(color: Colors.grey),
+                  ),
+                ),
               ],
             ),
           ),
@@ -144,11 +185,13 @@ class _AccountSettingsState extends State<AccountSettingsWidget> {
                 minWidth: 300.0,
                 onPressed: () async {
                   FileIO file = new FileIO();
+                  alldata['settings']['location'] = cityCon.text;
                   alldata['accounts']['bilibili'] = biliCon.text;
                   alldata['accounts']['weibo'] = weiboCon.text;
                   alldata['accounts']['youtube'] = youtubeCon.text;
                   alldata['accounts']['instagram'] = insCon.text;
                   alldata['accounts']['github'] = githubCon.text;
+                  alldata['accounts']['days'] = daysCon.text;
                   String alldataString = jsonEncode(alldata);
                   file.writeData(alldataString);
                   var formData = FormData.fromMap({
