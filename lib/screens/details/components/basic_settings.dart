@@ -25,7 +25,7 @@ class BasicSettingsWidget extends StatefulWidget {
 
 class _BasicSettingsState extends State<BasicSettingsWidget> {
   //FormData formData;
-
+  bool debounceActive = false;
   String alldatapath;
   bool _autoNextPage = true;
   bool _isGestureOn = true;
@@ -102,8 +102,12 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                       // client = http.Client();
                     },
                     onChange: (double value) async {
+                      if (debounceActive) return null;
+                      debounceActive = true;
+                      await Future.delayed(Duration(milliseconds: 50));
+                      debounceActive = false;
                       if (isReady)
-                        wschannel.sink.add("b" + value.toInt().toString());
+                        wschannel.sink.add("!b" + value.toInt().toString());
                     },
                     onChangeEnd: (double endValue) async {
                       isReady = false;
@@ -252,7 +256,7 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                       // client = http.Client();
                     },
                     onChange: (double value) async {
-                      wschannel.sink.add("v" + value.toInt().toString());
+                      wschannel.sink.add("!v" + value.toInt().toString());
                     },
                     onChangeEnd: (double endValue) async {
                       // ucallback providing an ending value (when a pan gesture ends)

@@ -324,10 +324,12 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
               value: pageSwitchEnable.contains(pageSortList[index]),
               onChanged: (value) {
                 if (!value) {
+                  print("close");
                   pageSwitchEnable.remove(pageSortList[index]);
                   final int newInt = pageSortList.removeAt(index);
                   pageSortList.insert(pageSortList.length, newInt);
-
+                  print(pageSwitchEnable);
+                  print(pageSortList);
                   setState(() {
                     pageSwitchEnable = pageSwitchEnable;
                   });
@@ -342,7 +344,7 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                 }
                 //  print(pageSwitchEnable.contains(pageSortList[index]));
                 //  print(pageSortList);
-                print(pageSwitchEnable);
+                //print(pageSwitchEnable);
               },
             );
           }),
@@ -353,16 +355,20 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
               }
 
               if (pageSwitchEnable.contains(pageSortList[oldIndex])) {
-              } else {
                 final int newInt = pageSortList.removeAt(oldIndex);
                 pageSortList.insert(newIndex, newInt);
                 pageSwitchEnable.removeAt(oldIndex);
                 pageSwitchEnable.insert(newIndex, newInt);
+              } else {
+                print("DO it");
+                final int newInt = pageSortList.removeAt(oldIndex);
+                pageSortList.insert(newIndex, newInt);
               }
-              print(pageSwitchEnable);
             });
 
+            print(pageSwitchEnable);
             alldata['pageslist'] = pageSwitchEnable;
+            print(alldata['pageslist']);
             String alldataString = jsonEncode(alldata);
             FileIO().writeData(alldataString);
             var formData = FormData.fromMap({
