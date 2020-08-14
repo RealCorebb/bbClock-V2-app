@@ -122,7 +122,7 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                   children: <Widget>[
                     Container(
                         width: 1280,
-                        height: 320,
+                        height: 360,
                         child: Image(
                             // filterQuality: ,
                             image: AssetImage(
@@ -131,8 +131,9 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                       child: Row(),
                     ),
                     Container(
-                      width: 1280,
-                      height: 320,
+                      padding: EdgeInsets.fromLTRB(25, 0, 25, 0),
+                      width: 1080,
+                      height: 350,
                       child: PageView(
                         physics: new NeverScrollableScrollPhysics(),
                         controller: controller,
@@ -183,16 +184,22 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                                     },
                                   ),
                                   child: Container(
-                                    child: Text(
-                                      ' ${alldata['pages']['${alldata['pageslist'][i]}']['text'][0]}',
-                                      textAlign: TextAlign.center,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        //color: Hexcolor(
-                                        // '#${alldata['pages']['${alldata['pageslist'][i]}']['color']}'),
-                                        color: textColors[i],
-                                        fontSize: 88,
-                                        fontFamily: 'PixelCorebb',
+                                    constraints: BoxConstraints(minWidth: 240),
+                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Flexible(
+                                        child: Text(
+                                          ' ${alldata['pages']['${alldata['pageslist'][i]}']['text'][0]}',
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            //color: Hexcolor(
+                                            // '#${alldata['pages']['${alldata['pageslist'][i]}']['color']}'),
+                                            color: textColors[i],
+                                            fontSize: 77,
+                                            fontFamily: 'PixelCorebb',
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
