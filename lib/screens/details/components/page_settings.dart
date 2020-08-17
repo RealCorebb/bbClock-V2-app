@@ -153,57 +153,111 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                                           image: NetworkImage(
                                               'http://bbclock.lan/gifs/${alldata['pageslist'][i]}.gif'),
                                           fit: BoxFit.fitWidth)),
-                                InkWell(
-                                  onTap: () => showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        titlePadding: const EdgeInsets.all(0.0),
-                                        contentPadding:
-                                            const EdgeInsets.all(0.0),
-                                        content: SingleChildScrollView(
-                                          child: ColorPicker(
-                                            pickerColor: currentColor,
-                                            onColorChanged: changeColor,
-                                            colorPickerWidth: 300.0,
-                                            pickerAreaHeightPercent: 0.7,
-                                            enableAlpha: false,
-                                            displayThumbColor: true,
-                                            showLabel: true,
-                                            paletteType: PaletteType.hsv,
-                                            pickerAreaBorderRadius:
-                                                const BorderRadius.only(
-                                              topLeft:
-                                                  const Radius.circular(2.0),
-                                              topRight:
-                                                  const Radius.circular(2.0),
+                                if (i != 0)
+                                  InkWell(
+                                    onTap: () => showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          titlePadding:
+                                              const EdgeInsets.all(0.0),
+                                          contentPadding:
+                                              const EdgeInsets.all(0.0),
+                                          content: SingleChildScrollView(
+                                            child: ColorPicker(
+                                              pickerColor: currentColor,
+                                              onColorChanged: changeColor,
+                                              colorPickerWidth: 300.0,
+                                              pickerAreaHeightPercent: 0.7,
+                                              enableAlpha: false,
+                                              displayThumbColor: true,
+                                              showLabel: true,
+                                              paletteType: PaletteType.hsv,
+                                              pickerAreaBorderRadius:
+                                                  const BorderRadius.only(
+                                                topLeft:
+                                                    const Radius.circular(2.0),
+                                                topRight:
+                                                    const Radius.circular(2.0),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    child: Container(
+                                      width: 240,
+                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: Flexible(
+                                          child: Text(
+                                            ' ${alldata['pages']['${alldata['pageslist'][i]}']['text'][0]}',
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              //color: Hexcolor(
+                                              // '#${alldata['pages']['${alldata['pageslist'][i]}']['color']}'),
+                                              color: textColors[i],
+                                              fontSize: 77,
+                                              fontFamily: 'PixelCorebb',
                                             ),
                                           ),
                                         ),
-                                      );
-                                    },
-                                  ),
-                                  child: Container(
-                                    constraints: BoxConstraints(minWidth: 240),
-                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                                    child: Align(
-                                      alignment: Alignment.center,
-                                      child: Flexible(
-                                        child: Text(
-                                          ' ${alldata['pages']['${alldata['pageslist'][i]}']['text'][0]}',
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            //color: Hexcolor(
-                                            // '#${alldata['pages']['${alldata['pageslist'][i]}']['color']}'),
-                                            color: textColors[i],
-                                            fontSize: 77,
-                                            fontFamily: 'PixelCorebb',
+                                      ),
+                                    ),
+                                  )
+                                else
+                                  InkWell(
+                                    onTap: () => showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          titlePadding:
+                                              const EdgeInsets.all(0.0),
+                                          contentPadding:
+                                              const EdgeInsets.all(0.0),
+                                          content: SingleChildScrollView(
+                                            child: ColorPicker(
+                                              pickerColor: currentColor,
+                                              onColorChanged: changeColor,
+                                              colorPickerWidth: 300.0,
+                                              pickerAreaHeightPercent: 0.7,
+                                              enableAlpha: false,
+                                              displayThumbColor: true,
+                                              showLabel: true,
+                                              paletteType: PaletteType.hsv,
+                                              pickerAreaBorderRadius:
+                                                  const BorderRadius.only(
+                                                topLeft:
+                                                    const Radius.circular(2.0),
+                                                topRight:
+                                                    const Radius.circular(2.0),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    child: Container(
+                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: Flexible(
+                                          child: Text(
+                                            ' ${alldata['pages']['${alldata['pageslist'][i]}']['text'][0]}',
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              //color: Hexcolor(
+                                              // '#${alldata['pages']['${alldata['pageslist'][i]}']['color']}'),
+                                              color: textColors[i],
+                                              fontSize: 77,
+                                              fontFamily: 'PixelCorebb',
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
                               ],
                             ))
                         ],

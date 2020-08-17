@@ -159,6 +159,7 @@ class _AccountSettingsState extends State<AccountSettingsWidget> {
                     hintStyle: TextStyle(color: Colors.grey),
                   ),
                 ),
+                /*
                 TextField(
                   controller: daysCon,
                   decoration: InputDecoration(
@@ -170,7 +171,7 @@ class _AccountSettingsState extends State<AccountSettingsWidget> {
                     hintText: '计数日时间戳',
                     hintStyle: TextStyle(color: Colors.grey),
                   ),
-                ),
+                ),*/
               ],
             ),
           ),
@@ -191,7 +192,7 @@ class _AccountSettingsState extends State<AccountSettingsWidget> {
                   alldata['accounts']['youtube'] = youtubeCon.text;
                   alldata['accounts']['instagram'] = insCon.text;
                   alldata['accounts']['github'] = githubCon.text;
-                  alldata['accounts']['days'] = daysCon.text;
+                  // alldata['accounts']['days'] = daysCon.text;
                   String alldataString = jsonEncode(alldata);
                   file.writeData(alldataString);
                   var formData = FormData.fromMap({
