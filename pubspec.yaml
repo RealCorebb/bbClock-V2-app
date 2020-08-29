@@ -21,6 +21,8 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  universal_io: ^1.0.1
+  flutter_svg: ^0.18.0
   flutter_launcher_icons: ^0.7.5
   flutter_picker: ^1.1.5
   dio: ^3.0.9
@@ -38,7 +40,6 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.3
-  flutter_svg: ^0.17.4 #it helps us to use SVG in our app
   google_fonts: ^1.1.0 #this allows you to easily use any fonts from fonts.google.com in your Flutter app
 
 dev_dependencies:
@@ -80,6 +81,7 @@ flutter:
     - family: PixelCorebb
       fonts:
         - asset: assets/fonts/PixelCorebb.ttf
+          weight: 700
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

@@ -203,7 +203,7 @@ class _AccountSettingsState extends State<AccountSettingsWidget> {
 
                   var response = new Response(); //Response from Dio
                   response =
-                      await dio.put("http://bbclock.lan", data: formData);
+                      await dio.put("http://$bbclockURL", data: formData);
 
                   if (response.statusCode == 200) {
                     print("OK");

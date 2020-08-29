@@ -14,8 +14,9 @@ import 'package:http/http.dart' as http;
 
 final controller = PageController(initialPage: 0);
 Size size;
-
+bool isAP = false;
 class AdvancedSettingsWidget extends StatefulWidget {
+  
   @override
   _AdvancedSettingsState createState() => _AdvancedSettingsState();
 }
@@ -23,13 +24,13 @@ class AdvancedSettingsWidget extends StatefulWidget {
 class _AdvancedSettingsState extends State<AdvancedSettingsWidget> {
   final myController = TextEditingController();
 
-  bool _isSTA = false;
+  
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     myController.text = alldata['settings']['NetworkAddress'];
-    if (alldata['settings']['NetworkMode'] == "AP") _isSTA = true;
+    
   }
 
   @override
@@ -76,11 +77,11 @@ class _AdvancedSettingsState extends State<AdvancedSettingsWidget> {
                     Switch(
                         activeColor: Colors.green,
                         inactiveTrackColor: Colors.lightBlue,
-                        value: _isSTA,
+                        value: isAP,
                         onChanged: (value) {
                           setState(() {
-                            _isSTA = value;
-                            print(_isSTA);
+                            isAP = value;
+                            print(isAP);
                           });
                         }),
                   ],
@@ -93,7 +94,7 @@ class _AdvancedSettingsState extends State<AdvancedSettingsWidget> {
                       "assets/icons/device.svg",
                       height: 38,
                     ),
-                    hintText: 'http://bbClock.lan',
+                    hintText: 'bbClock.lan',
                     hintStyle: TextStyle(color: Colors.grey),
                   ),
                 ),
@@ -114,7 +115,7 @@ class _AdvancedSettingsState extends State<AdvancedSettingsWidget> {
                   print(alldata['settings']['NetworkMode']);
                   print(alldata['settings']['NetworkAddress']);
                   alldata['settings']['NetworkAddress'] = myController.text;
-                  if (_isSTA)
+                  if (isAP)
                     alldata['settings']['NetworkMode'] = "AP";
                   else
                     alldata['settings']['NetworkMode'] = "STA";
@@ -131,7 +132,7 @@ class _AdvancedSettingsState extends State<AdvancedSettingsWidget> {
 
                   var response = new Response(); //Response from Dio
                   response =
-                      await dio.put("http://bbclock.lan", data: formData);
+                      await dio.put("http://$bbclockURL", data: formData);
 
                   if (response.statusCode == 200) {
                     print("OK");

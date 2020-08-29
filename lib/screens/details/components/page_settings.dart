@@ -128,9 +128,6 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                             image: AssetImage(
                                 "assets/images/page_background.png"))),
                     Container(
-                      child: Row(),
-                    ),
-                    Container(
                       padding: EdgeInsets.fromLTRB(25, 0, 25, 0),
                       width: 1080,
                       height: 350,
@@ -151,7 +148,7 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                                       child: Image(
                                           filterQuality: FilterQuality.none,
                                           image: NetworkImage(
-                                              'http://bbclock.lan/gifs/${alldata['pageslist'][i]}.gif'),
+                                              'http://$bbclockURL/gifs/${alldata['pageslist'][i]}.gif'),
                                           fit: BoxFit.fitWidth)),
                                 if (i != 0)
                                   InkWell(
@@ -186,21 +183,20 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                                       },
                                     ),
                                     child: Container(
-                                      width: 240,
+                                      constraints: BoxConstraints(
+                                          minWidth: 240, maxWidth: 240),
                                       padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                                       child: Align(
                                         alignment: Alignment.center,
-                                        child: Flexible(
-                                          child: Text(
-                                            ' ${alldata['pages']['${alldata['pageslist'][i]}']['text'][0]}',
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              //color: Hexcolor(
-                                              // '#${alldata['pages']['${alldata['pageslist'][i]}']['color']}'),
-                                              color: textColors[i],
-                                              fontSize: 77,
-                                              fontFamily: 'PixelCorebb',
-                                            ),
+                                        child: Text(
+                                          ' ${alldata['pages']['${alldata['pageslist'][i]}']['text'][0]}',
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            //color: Hexcolor(
+                                            // '#${alldata['pages']['${alldata['pageslist'][i]}']['color']}'),
+                                            color: textColors[i],
+                                            fontSize: 77,
+                                            fontFamily: 'PixelCorebb',
                                           ),
                                         ),
                                       ),
@@ -242,17 +238,15 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                                       padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                                       child: Align(
                                         alignment: Alignment.center,
-                                        child: Flexible(
-                                          child: Text(
-                                            ' ${alldata['pages']['${alldata['pageslist'][i]}']['text'][0]}',
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              //color: Hexcolor(
-                                              // '#${alldata['pages']['${alldata['pageslist'][i]}']['color']}'),
-                                              color: textColors[i],
-                                              fontSize: 77,
-                                              fontFamily: 'PixelCorebb',
-                                            ),
+                                        child: Text(
+                                          ' ${alldata['pages']['${alldata['pageslist'][i]}']['text'][0]}',
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            //color: Hexcolor(
+                                            // '#${alldata['pages']['${alldata['pageslist'][i]}']['color']}'),
+                                            color: textColors[i],
+                                            fontSize: 77,
+                                            fontFamily: 'PixelCorebb',
                                           ),
                                         ),
                                       ),
@@ -455,7 +449,7 @@ class _PagesSettingsState extends State<PagesSettingsWidget> {
                 var dio = Dio();
 
                 var response = new Response(); //Response from Dio
-                response = await dio.put("http://bbclock.lan", data: formData);
+                response = await dio.put("http://$bbclockURL", data: formData);
 
                 if (response.statusCode == 200) {
                   print("OK");

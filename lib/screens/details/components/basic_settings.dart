@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:bbClock/main.dart';
 import 'package:bbClock/models/fileIO.dart';
@@ -115,28 +114,7 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
                       alldata['settings']['brightness'] = endValue.toInt();
                       String alldataString = jsonEncode(alldata);
                       FileIO().writeData(alldataString);
-                      /*
-                      var formData = FormData.fromMap({
-                        'file': MultipartFile.fromString(alldataString,
-                            filename: 'alldata.json')
-                      });
-                      var dio = Dio();
 
-                      var response = new Response(); //Response from Dio
-                      response =
-                          await dio.put("http://bbclock.lan", data: formData);
-
-                      if (response.statusCode == 200) {
-                        print("OK");
-                        Fluttertoast.showToast(
-                            msg: " 保存成功 ",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.BOTTOM,
-                            timeInSecForIosWeb: 1,
-                            backgroundColor: Colors.blue[200],
-                            textColor: Colors.white,
-                            fontSize: 16.0);
-                      }*/ //MAYBE NOT NEED
                     },
                   ),
                 ),
@@ -206,7 +184,7 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
 
                       var response = new Response(); //Response from Dio
                       response =
-                          await dio.put("http://bbclock.lan", data: formData);
+                          await dio.put("http://$bbclockURL", data: formData);
 
                       if (response.statusCode == 200) {
                         print("OK");
@@ -272,7 +250,7 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
 
                       var response = new Response(); //Response from Dio
                       response =
-                          await dio.put("http://bbclock.lan", data: formData);
+                          await dio.put("http://$bbclockURL", data: formData);
 
                       if (response.statusCode == 200) {
                         print("OK");
@@ -455,7 +433,7 @@ class _BasicSettingsState extends State<BasicSettingsWidget> {
 
                   var response = new Response(); //Response from Dio
                   response =
-                      await dio.put("http://bbclock.lan", data: formData);
+                      await dio.put("http://$bbclockURL", data: formData);
 
                   if (response.statusCode == 200) {
                     print("OK");

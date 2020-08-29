@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 import '../constants.dart';
+import '../main.dart';
 
 var wsstatus = TextEditingController();
 
@@ -22,7 +24,9 @@ class SearchBox extends StatelessWidget {
         vertical: kDefaultPadding / 4, // 5 top and bottom
       ),
       decoration: BoxDecoration(),
-      child: TextField(
+      child: Column(
+        children: <Widget>[
+        TextField(
         enabled: false,
         controller: wsstatus,
         onChanged: onChanged,
@@ -42,6 +46,8 @@ class SearchBox extends StatelessWidget {
           hintText: '正在尝试连接设备',
           hintStyle: TextStyle(color: Colors.white),
         ),
+      ),
+        ],
       ),
     );
   }
